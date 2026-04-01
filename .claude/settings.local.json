@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /home/jderyl/Work/Hitech/hitech-printers -not -path */node_modules/* -type f)",
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Bash(vercel:*)"
+    ]
+  }
+}
