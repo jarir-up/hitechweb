@@ -168,7 +168,7 @@ export default function Contact() {
                   href={WA_DIRECT}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold px-4 py-2.5 rounded-lg transition-colors text-sm w-full"
+                  className="flex items-center justify-center gap-2 bg-[#0E6655] hover:bg-[#0B5548] text-white font-bold px-4 py-2.5 rounded-lg transition-colors text-sm w-full"
                 >
                   <WhatsAppIcon className="w-4 h-4" />
                   Open WhatsApp
@@ -321,7 +321,7 @@ export default function Contact() {
 
                       <button
                         type="submit"
-                        className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1EB854] text-white font-bold px-6 py-3.5 rounded-lg transition-colors"
+                        className="w-full flex items-center justify-center gap-2 bg-[#0E6655] hover:bg-[#0B5548] text-white font-bold px-6 py-3.5 rounded-lg transition-colors"
                       >
                         <WhatsAppIcon />
                         Send Quote Request on WhatsApp

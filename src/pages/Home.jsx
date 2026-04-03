@@ -225,14 +225,14 @@ export default function Home() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, amount: 0.3 }}
-        className="bg-[#CC0000]"
+        className="bg-[#2A1414]"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-white text-center divide-x-0 md:divide-x divide-red-400/40">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-white text-center divide-x-0 md:divide-x divide-white/10">
             {trustStats.map(({ value, label }) => (
               <div key={label} className="px-4">
                 <div className="text-2xl md:text-3xl font-black tracking-tight">{value}</div>
-                <div className="text-sm text-red-100 mt-1 leading-snug">{label}</div>
+                <div className="text-sm text-white/60 mt-1 leading-snug">{label}</div>
               </div>
             ))}
           </div>
@@ -373,18 +373,18 @@ export default function Home() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, amount: 0.4 }}
-        className="bg-[#CC0000] py-16"
+        className="bg-[#2A1414] py-16"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
           <h2 className="text-3xl md:text-4xl font-black mb-3">Ready to Print?</h2>
-          <p className="text-red-100 mb-8 text-lg max-w-lg mx-auto">
+          <p className="text-white/60 mb-8 text-lg max-w-lg mx-auto">
             Send us your design on WhatsApp and get a quote in minutes.
           </p>
           <a
             href={WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-white text-[#CC0000] hover:bg-red-50 font-bold px-8 py-3.5 rounded transition-colors"
+            className="inline-flex items-center gap-2 bg-white text-[#2A1414] hover:bg-gray-100 font-bold px-8 py-3.5 rounded transition-colors"
           >
             <WhatsAppIcon />
             WhatsApp Us Now

@@ -4,7 +4,31 @@
       "Bash(find /home/jderyl/Work/Hitech/hitech-printers -not -path */node_modules/* -type f)",
       "Bash(npm run:*)",
       "Bash(npm install:*)",
-      "Bash(vercel:*)"
+      "Bash(vercel:*)",
+      "Bash(gh run:*)",
+      "Bash(ls /home/jderyl/Work/Hitech/hitech-printers/*.json*)",
+      "Bash(ls /home/jderyl/Work/Hitech/hitech-printers/*.toml)",
+      "Bash(git -C /home/jderyl/Work/Hitech/hitech-printers log --oneline -5)",
+      "Bash(git -C /home/jderyl/Work/Hitech/hitech-printers show --stat HEAD)",
+      "Bash(git -C /home/jderyl/Work/Hitech/hitech-printers show 15f4ea3 --stat)",
+      "Bash(git -C /home/jderyl/Work/Hitech/hitech-printers show 15f4ea3 -- wrangler.jsonc)",
+      "Bash(git:*)",
+      "Bash(convert \"Business Card Basic.HEIC\" \"Business Card Basic.webp\")",
+      "Bash(rm *.HEIC)",
+      "Bash(ls -lh *.webp)",
+      "Bash(ls /home/jderyl/Work/Hitech/hitech-printers/public/images/*.webp)",
+      "Bash(wrangler whoami:*)",
+      "Bash(npx wrangler:*)",
+      "Bash(xdg-open:*)",
+      "Bash(curl:*)",
+      "Bash(pkill -f \"vite\")",
+      "Bash(fuser -k 5173/tcp)",
+      "Bash(dig hitechprinters.com.pk NS +short)",
+      "Bash(nslookup -type=NS hitechprinters.com.pk)",
+      "Bash(host -t NS hitechprinters.com.pk)",
+      "Bash(sed -i 's/bg-\\\\[#25D366\\\\] hover:bg-\\\\[#1ebe5d\\\\]/bg-[#0E6655] hover:bg-[#0B5548]/g; s/bg-\\\\[#25D366\\\\] hover:bg-\\\\[#1EB854\\\\]/bg-[#0E6655] hover:bg-[#0B5548]/g' /home/jderyl/Work/Hitech/hitech-printers/src/pages/Contact.jsx /home/jderyl/Work/Hitech/hitech-printers/src/pages/Portfolio.jsx)",
+      "Bash(sed -i 's/bg-\\\\[#25D366\\\\]/bg-[#0E6655]/g' /home/jderyl/Work/Hitech/hitech-printers/src/components/WhatsAppButton.jsx)",
+      "Bash(ls:*)"
     ]
   }
 }
