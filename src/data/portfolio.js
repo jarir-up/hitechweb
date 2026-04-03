@@ -8,9 +8,7 @@ export const sectors = [
   { id: 'retail',    label: 'Retail' },
 ]
 
-/* Color assigned per sector — used for placeholder blocks.
-   Swap a card's imagePlaceholder to false and add an imageSrc
-   field when Umair's real photos are ready. */
+/* Color assigned per sector — used for placeholder blocks */
 export const sectorColors = {
   corporate: { bg: '#1A3A6B', light: '#EEF2FA' },
   schools:   { bg: '#1A6B3C', light: '#EEF7F2' },
@@ -21,99 +19,141 @@ export const sectorColors = {
 }
 
 export const portfolioItems = [
-  /* ── Corporate (3) ──────────────────────────────────────────── */
+  /* ── Corporate ───────────────────────────────────────────── */
   {
     id: 1,
-    title: 'Annual Report 2024',
+    title: 'ICMA Pakistan — Bifold Brochure',
     sector: 'corporate',
-    description: '48-page perfect-bound annual report on 130 GSM gloss stock with spot-UV cover, delivered to a Karachi-based manufacturing group.',
-    imagePlaceholder: true,
+    description: 'Full-colour A4 bifold brochure on 130 GSM gloss coated stock for ICMA Pakistan, a leading professional accounting body.',
+    imageSrc: '/images/A4 Brochure Bifold-ICMA Pakistan.webp',
   },
   {
     id: 2,
-    title: 'Corporate Stationery Suite',
+    title: 'ICMA Pakistan — Letterheads',
     sector: 'corporate',
-    description: 'Full identity kit — business cards (400 GSM spot UV), letterheads, envelopes, and branded notepads — for a DHA law firm.',
-    imagePlaceholder: true,
+    description: 'Branded corporate letterheads with precise colour matching on 90 GSM bond paper, printed in a bulk run for ICMA Pakistan.',
+    imageSrc: '/images/Letterheads-ICMA Pakistan.webp',
   },
   {
     id: 3,
-    title: 'Company Profile Booklet',
+    title: 'Port & Protocol — Corporate Letterhead',
     sector: 'corporate',
-    description: '24-page saddle-stitched company profile with gloss lamination, printed in a 1,000-unit run for a SITE-area engineering firm.',
-    imagePlaceholder: true,
+    description: 'Crisp single-colour letterhead on premium 90 GSM paper for Port & Protocol, delivered in a 1,000-sheet run.',
+    imageSrc: '/images/Letterhead-Port & Protocol.webp',
   },
-
-  /* ── Schools (2) ─────────────────────────────────────────────── */
   {
     id: 4,
-    title: 'Back-to-School Stationery Pack',
-    sector: 'schools',
-    description: 'Branded exercise books, result cards, admission forms, and diaries for a Nazimabad private school network — 5,000-unit run.',
-    imagePlaceholder: true,
+    title: 'First Paramount Modarba — Certificate',
+    sector: 'corporate',
+    description: 'Formal certificate on heavyweight art board with precision offset printing for First Paramount Modarba.',
+    imageSrc: '/images/Certificate-First Paramount Modarba.webp',
   },
   {
     id: 5,
-    title: 'University Prospectus',
-    sector: 'schools',
-    description: '36-page A4 prospectus with full-colour photography placeholders and matte lamination for a Karachi university admissions cycle.',
-    imagePlaceholder: true,
+    title: 'Panj Soora — 4-Colour Book',
+    sector: 'corporate',
+    description: '4-colour offset-printed religious book by Molana Modudi, produced with accurate CMYK registration on 80 GSM book paper.',
+    imageSrc: '/images/4 color book-Panj Soora by Molana Modudi.webp',
   },
 
-  /* ── Pharma (2) ──────────────────────────────────────────────── */
+  /* ── Schools ─────────────────────────────────────────────── */
   {
     id: 6,
-    title: 'Medication Labels — Bulk Run',
-    sector: 'pharma',
-    description: 'High-precision pharma-grade product labels with barcodes, compliance text, and sequential numbering for a pharmaceutical distributor.',
-    imagePlaceholder: true,
+    title: 'Dar e Arqam Schools — Diary & Register',
+    sector: 'schools',
+    description: 'Branded student diaries and registers for Dar e Arqam Schools, printed on 70 GSM ruled paper with gloss laminated covers.',
+    imageSrc: '/images/Diary & Register- Dar e Arqam Schools.webp',
   },
   {
     id: 7,
-    title: 'Product Packaging Cartons',
-    sector: 'pharma',
-    description: 'Custom die-cut folding cartons for OTC medication packaging — printed on solid board with matte lamination and regulatory text.',
-    imagePlaceholder: true,
+    title: 'Dar e Arqam Schools — Hifz Diary',
+    sector: 'schools',
+    description: 'Specialised Hifz (Quran memorisation) diary for Dar e Arqam Schools, custom-ruled with Islamic branding throughout.',
+    imageSrc: '/images/Hifz Diary- Dar e Arqam Schools.webp',
   },
-
-  /* ── Textile (2) ─────────────────────────────────────────────── */
   {
     id: 8,
-    title: 'Fabric Catalogue 2024',
-    sector: 'textile',
-    description: '64-page A4 fabric catalogue with colour-accurate CMYK print for a Korangi textile export house, saddle-stitched with gloss cover.',
-    imagePlaceholder: true,
+    title: 'Cadet College Karampur — Prospectus',
+    sector: 'schools',
+    description: 'Full-colour admissions prospectus for Cadet College Karampur, saddle-stitched with a matte laminated cover.',
+    imageSrc: '/images/Prospectus Book-Cadet College Karampur.webp',
   },
   {
     id: 9,
-    title: 'Hang Tags & Woven Labels',
-    sector: 'textile',
-    description: 'Swing tags on 350 GSM board with spot-UV branding and gold foil, paired with printed woven-look inner labels for a garment brand.',
-    imagePlaceholder: true,
+    title: 'Cadet College Larkana — Prospectus',
+    sector: 'schools',
+    description: 'Multi-page full-colour prospectus for Cadet College Larkana with photography and structured layout, matte laminated cover.',
+    imageSrc: '/images/Prospectus Book-Cadet College Larkana.webp',
   },
-
-  /* ── Events (2) ──────────────────────────────────────────────── */
   {
     id: 10,
-    title: 'Wedding Invitation Suite',
-    sector: 'events',
-    description: 'Luxury wedding cards on 300 GSM pearl-finish stock with gold foil stamping, matching envelopes, and RSVP inserts — 500 sets.',
-    imagePlaceholder: true,
+    title: 'Iqra Teachers Training School — Book Cover',
+    sector: 'schools',
+    description: 'Hard cover book title page for Iqra Teachers Training School, printed in full colour on heavy board with lamination.',
+    imageSrc: '/images/Hard Cover Book Title-Iqra Teachers Training School.webp',
   },
   {
     id: 11,
-    title: 'Corporate Event Collateral',
-    sector: 'events',
-    description: 'A5 event programmes, numbered tickets, and 24-hour rush A4 flyers for a Karachi business conference — 2,000-unit print run.',
+    title: 'Riphah College — A5 Flyer',
+    sector: 'schools',
+    description: 'Single-sided A5 promotional flyer on 130 GSM gloss stock for Riphah College, produced in a rush run.',
+    imageSrc: '/images/A5 Flyer-Riphah College.webp',
+  },
+
+  /* ── Pharma ──────────────────────────────────────────────── */
+  {
+    id: 12,
+    title: 'Pharma Product Labels',
+    sector: 'pharma',
+    description: 'High-precision pharmaceutical product labels with barcodes, compliance text, and sequential numbering for a Karachi distributor.',
     imagePlaceholder: true,
   },
 
-  /* ── Retail (1) ──────────────────────────────────────────────── */
+  /* ── Textile ─────────────────────────────────────────────── */
   {
-    id: 12,
-    title: 'Retail Packaging Range',
+    id: 13,
+    title: 'Textile Channel — Barcode & Label Stickers',
+    sector: 'textile',
+    description: 'Barcode and product label stickers in bulk for Textile Channel, printed on self-adhesive stock with precision die-cutting.',
+    imageSrc: '/images/Barcode Stickers-Textile Channel.webp',
+  },
+  {
+    id: 14,
+    title: 'Cotton Valley — A5 Bifold Flyer',
+    sector: 'textile',
+    description: 'A5 bifold promotional flyer for Cotton Valley garment brand, full-colour on 130 GSM gloss coated paper.',
+    imageSrc: '/images/A5 Flyer BiFold-Cotton Valley.webp',
+  },
+  {
+    id: 15,
+    title: 'Pulevlor — A4 Trifold Flyer',
+    sector: 'textile',
+    description: 'A4 trifold flyer with vivid CMYK print on 130 GSM silk for Pulevlor — a high-fold job requiring precise registration.',
+    imageSrc: '/images/A4 Flyer TriFold-Pulevlor.webp',
+  },
+
+  /* ── Events ──────────────────────────────────────────────── */
+  {
+    id: 16,
+    title: 'Luxury Wedding Invitation Cards',
+    sector: 'events',
+    description: 'Premium wedding cards on 300 GSM pearl-finish stock with full-colour offset print — produced for a Karachi family.',
+    imageSrc: '/images/Wedding Cards.webp',
+  },
+
+  /* ── Retail ──────────────────────────────────────────────── */
+  {
+    id: 17,
+    title: 'Gift Labs — Taffeta Clothing Labels',
     sector: 'retail',
-    description: 'Custom folding boxes, product labels, and sticker sheets for a consumer goods brand launching across Karachi retail outlets.',
-    imagePlaceholder: true,
+    description: 'Taffeta fabric labels for Gift Labs, offset-printed with fine detail on satin-finish label stock.',
+    imageSrc: '/images/Taffeta Labels-Gift Labs.webp',
+  },
+  {
+    id: 18,
+    title: 'Shanghai Dry Cleaners — Bill Book',
+    sector: 'retail',
+    description: 'Custom carbonless bill books for Shanghai Dry Cleaners with branded header and serial numbering.',
+    imageSrc: '/images/BillBook- Shanghai Dry Cleaners.webp',
   },
 ]

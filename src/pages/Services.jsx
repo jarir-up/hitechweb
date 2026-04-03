@@ -2,10 +2,20 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { services, categories } from '../data/services'
 
-const WA_BASE = 'https://wa.me/923002050000?text='
+const WA_BASE = 'https://wa.me/923343219844?text='
 
 function whatsappUrl(productName) {
   return WA_BASE + encodeURIComponent(`Hi, I'd like a quote for ${productName}.`)
+}
+
+/* Per-category accent colour — used on card top-border and icon tint */
+const categoryColor = {
+  stationery: '#1A3A6B',
+  marketing:  '#0D6B6B',
+  packaging:  '#5B2C8D',
+  school:     '#1A6B3C',
+  event:      '#CC6600',
+  bulk:       '#2A2A2A',
 }
 
 function WhatsAppIcon({ className = 'w-4 h-4' }) {
@@ -16,10 +26,83 @@ function WhatsAppIcon({ className = 'w-4 h-4' }) {
   )
 }
 
+function ArrowRight({ className = 'w-3.5 h-3.5' }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+  )
+}
+
 const cardVariants = {
-  hidden: { opacity: 0, scale: 0.96, y: 12 },
-  show:   { opacity: 1, scale: 1,    y: 0,  transition: { duration: 0.25, ease: 'easeOut' } },
-  exit:   { opacity: 0, scale: 0.96, y: -8, transition: { duration: 0.18 } },
+  hidden: { opacity: 0, y: 16 },
+  show:   { opacity: 1, y: 0,  transition: { duration: 0.22, ease: 'easeOut' } },
+  exit:   { opacity: 0, y: -8, transition: { duration: 0.15 } },
+}
+
+function ServiceCard({ service }) {
+  const accent = categoryColor[service.category] ?? '#CC0000'
+  const iconBg  = accent + '15'   /* 8% opacity tint */
+
+  return (
+    <motion.div
+      layout
+      variants={cardVariants}
+      initial="hidden"
+      animate="show"
+      exit="exit"
+      className="bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-gray-200 hover:shadow-md transition-all duration-200 flex flex-col group"
+    >
+      {/* category accent line */}
+      <div className="h-[3px] w-full flex-shrink-0" style={{ backgroundColor: accent }} />
+
+      <div className="p-5 flex flex-col flex-1">
+        {/* icon + name */}
+        <div className="flex items-start gap-3 mb-3">
+          <div
+            className="w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0"
+            style={{ backgroundColor: iconBg }}
+          >
+            {service.icon}
+          </div>
+          <h3 className="text-[15px] font-bold text-[#1A1A1A] leading-snug pt-1.5 group-hover:text-[#1A1A1A]">
+            {service.name}
+          </h3>
+        </div>
+
+        {/* description */}
+        <p className="text-sm text-gray-500 leading-relaxed mb-4 flex-1">
+          {service.shortDesc}
+        </p>
+
+        {/* spec chips */}
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {service.specs.map((spec) => (
+            <span
+              key={spec}
+              className="text-[11px] bg-gray-50 border border-gray-200 text-gray-500 px-2 py-0.5 rounded-md leading-5"
+            >
+              {spec}
+            </span>
+          ))}
+        </div>
+
+        {/* WhatsApp CTA — green, compact */}
+        <div className="border-t border-gray-100 pt-3 mt-auto">
+          <a
+            href={whatsappUrl(service.name)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-[#1FAD5B] hover:text-[#178046] font-semibold text-[13px] transition-colors group/cta"
+          >
+            <WhatsAppIcon className="w-4 h-4" />
+            Get a Quote
+            <ArrowRight className="w-3 h-3 opacity-60 group-hover/cta:translate-x-0.5 transition-transform" />
+          </a>
+        </div>
+      </div>
+    </motion.div>
+  )
 }
 
 export default function Services() {
@@ -47,14 +130,14 @@ export default function Services() {
             </div>
             <h1 className="text-4xl md:text-5xl font-black mb-3">Our Services</h1>
             <p className="text-gray-400 max-w-xl text-lg leading-relaxed">
-              30 print products across 6 categories — all produced on our Heidelberg GTO 46 offset press.
+              37 print products across 6 categories — everything your business needs, under one roof.
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* ── Category Filter Tabs ──────────────────────────────── */}
-      <div className="sticky top-16 z-30 bg-white border-b border-gray-200 shadow-sm">
+      <div className="sticky top-16 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex gap-1.5 py-3 overflow-x-auto scrollbar-hide">
             {categories.map((cat) => (
@@ -63,7 +146,7 @@ export default function Services() {
                 onClick={() => setActive(cat.id)}
                 className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   active === cat.id
-                    ? 'bg-[#CC0000] text-white shadow-sm'
+                    ? 'bg-[#1A1A1A] text-white shadow-sm'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
@@ -89,56 +172,10 @@ export default function Services() {
             <span className="font-medium text-[#1A1A1A]">{activeLabel}</span>
           </motion.p>
 
-          <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             <AnimatePresence mode="popLayout">
               {filtered.map((service) => (
-                <motion.div
-                  key={service.id}
-                  layout
-                  variants={cardVariants}
-                  initial="hidden"
-                  animate="show"
-                  exit="exit"
-                  className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100 flex flex-col"
-                >
-                  {/* icon + name */}
-                  <div className="flex items-start gap-3 mb-3">
-                    <span className="text-3xl leading-none mt-0.5">{service.icon}</span>
-                    <div>
-                      <h3 className="text-lg font-bold text-[#1A1A1A] leading-snug">
-                        {service.name}
-                      </h3>
-                      <p className="text-sm text-gray-500 mt-1 leading-relaxed">
-                        {service.shortDesc}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* specs tags */}
-                  <div className="flex flex-wrap gap-2 mb-5 mt-1">
-                    {service.specs.map((spec) => (
-                      <span
-                        key={spec}
-                        className="text-xs font-medium bg-[#F5F0EB] text-[#1A1A1A] border border-gray-200 px-2.5 py-1 rounded-full"
-                      >
-                        {spec}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* CTA */}
-                  <div className="mt-auto">
-                    <a
-                      href={whatsappUrl(service.name)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 bg-[#CC0000] hover:bg-[#A30000] text-white text-sm font-semibold px-4 py-2.5 rounded transition-colors w-full justify-center"
-                    >
-                      <WhatsAppIcon />
-                      Get Quote on WhatsApp
-                    </a>
-                  </div>
-                </motion.div>
+                <ServiceCard key={service.id} service={service} />
               ))}
             </AnimatePresence>
           </motion.div>

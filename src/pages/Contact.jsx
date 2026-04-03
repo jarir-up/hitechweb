@@ -321,7 +321,7 @@ export default function Contact() {
 
                       <button
                         type="submit"
-                        className="w-full flex items-center justify-center gap-2 bg-[#CC0000] hover:bg-[#A30000] text-white font-bold px-6 py-3.5 rounded-lg transition-colors"
+                        className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1EB854] text-white font-bold px-6 py-3.5 rounded-lg transition-colors"
                       >
                         <WhatsAppIcon />
                         Send Quote Request on WhatsApp

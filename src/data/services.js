@@ -260,4 +260,66 @@ export const services = [
     shortDesc: 'End-to-end branded packaging solutions for retail, e-commerce, and gifting.',
     specs: ['Box, bag & wrap combos', 'Brand colour matching', 'Consistent multi-SKU batches', 'Sample approval before run'],
   },
+
+  /* ── Corporate Stationery (additions) ────────────────────── */
+  {
+    id: 31,
+    name: 'Compliment Slips',
+    category: 'stationery',
+    icon: '📋',
+    shortDesc: 'Branded one-third A4 slips enclosed with deliveries, parcels, and correspondence.',
+    specs: ['1/3 A4 standard size', '90–120 GSM bond', 'Single & two-colour print', 'Bulk pads available'],
+  },
+  {
+    id: 32,
+    name: 'Certificates',
+    category: 'stationery',
+    icon: '🏅',
+    shortDesc: 'Achievement, completion, and award certificates with premium finishes.',
+    specs: ['A4 & A3 landscape', '200–300 GSM art board', 'Gold/silver foil borders', 'Batch serial numbering'],
+  },
+  {
+    id: 33,
+    name: 'Bill Books & Receipt Pads',
+    category: 'stationery',
+    icon: '🧾',
+    shortDesc: 'Carbonless NCR bill books for shops, services, delivery, and restaurants.',
+    specs: ['2-part & 3-part NCR sets', 'Serial-numbered pages', 'Spiral or glue-bound', 'Custom header & columns'],
+  },
+
+  /* ── Packaging & Labels (additions) ──────────────────────── */
+  {
+    id: 34,
+    name: 'Taffeta & Fabric Labels',
+    category: 'packaging',
+    icon: '🪡',
+    shortDesc: 'Woven-look taffeta labels for garments, gift boxes, and retail products.',
+    specs: ['Taffeta & satin finish', 'Full-colour offset print', 'Custom shapes & sizes', 'Bulk roll or sheet format'],
+  },
+
+  /* ── School & Institutional (additions) ──────────────────── */
+  {
+    id: 35,
+    name: 'Notebooks',
+    category: 'school',
+    icon: '📓',
+    shortDesc: 'Branded school and institutional notebooks — distinct from exercise books in format and use.',
+    specs: ['40–80 page count', 'A5 & A4 formats', 'Gloss laminated cover', 'Plain, ruled, or grid interior'],
+  },
+  {
+    id: 36,
+    name: 'Admissions Prospectuses',
+    category: 'school',
+    icon: '🎓',
+    shortDesc: 'Full-colour multi-page prospectuses for colleges, universities, and academies.',
+    specs: ['24–80 pages', 'Saddle-stitch or perfect bound', 'Matte laminated cover', 'Photography & maps included'],
+  },
+  {
+    id: 37,
+    name: 'Bound Books & Publications',
+    category: 'school',
+    icon: '📚',
+    shortDesc: 'Complete book printing — hard cover titles, religious publications, and institutional books.',
+    specs: ['Hard cover & perfect bound', '4-colour offset throughout', '80–300+ page counts', 'Academic & religious titles'],
+  },
 ]

@@ -106,6 +106,16 @@ const whyItems = [
   },
 ]
 
+/* ── Category accent colours ────────────────────────────────── */
+const categoryColor = {
+  corporate: '#1A3A6B',
+  marketing:  '#0D6B6B',
+  packaging:  '#5B2C8D',
+  school:     '#1A6B3C',
+  event:      '#CC6600',
+  bulk:       '#2A2A2A',
+}
+
 /* ── WhatsApp SVG icon ──────────────────────────────────────── */
 function WhatsAppIcon({ className = 'w-5 h-5' }) {
   return (
@@ -254,38 +264,59 @@ export default function Home() {
             viewport={{ once: true, amount: 0.1 }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {serviceCategories.map((cat) => (
-              <motion.div
-                key={cat.id}
-                variants={fadeUp}
-                className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100 group flex flex-col"
-              >
-                <div className="text-4xl mb-4">{cat.icon}</div>
-                <h3 className="text-lg font-bold text-[#1A1A1A] mb-2 group-hover:text-[#CC0000] transition-colors">
-                  {cat.name}
-                </h3>
-                <p className="text-sm text-gray-500 leading-relaxed flex-1">
-                  {cat.description}
-                </p>
-                <Link
-                  to={cat.href}
-                  className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#CC0000] hover:underline"
+            {serviceCategories.map((cat) => {
+              const accent = categoryColor[cat.id] ?? '#1A1A1A'
+              return (
+                <motion.div
+                  key={cat.id}
+                  variants={fadeUp}
+                  className="bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-gray-200 hover:shadow-md transition-all duration-200 flex flex-col group"
                 >
-                  View Details
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              </motion.div>
-            ))}
+                  {/* accent bar */}
+                  <div className="h-[3px] w-full flex-shrink-0" style={{ backgroundColor: accent }} />
+
+                  <div className="p-6 flex flex-col flex-1">
+                    {/* icon + name */}
+                    <div className="flex items-start gap-3 mb-3">
+                      <div
+                        className="w-11 h-11 rounded-lg flex items-center justify-center text-2xl flex-shrink-0"
+                        style={{ backgroundColor: accent + '15' }}
+                      >
+                        {cat.icon}
+                      </div>
+                      <h3 className="text-[15px] font-bold text-[#1A1A1A] leading-snug pt-2">
+                        {cat.name}
+                      </h3>
+                    </div>
+
+                    <p className="text-sm text-gray-500 leading-relaxed flex-1 mb-4">
+                      {cat.description}
+                    </p>
+
+                    <div className="border-t border-gray-100 pt-3 mt-auto">
+                      <Link
+                        to={cat.href}
+                        className="inline-flex items-center gap-1.5 text-[13px] font-semibold transition-colors"
+                        style={{ color: accent }}
+                      >
+                        Explore
+                        <svg className="w-3 h-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
+                    </div>
+                  </div>
+                </motion.div>
+              )
+            })}
           </motion.div>
 
           <div className="text-center mt-10">
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 border-2 border-[#CC0000] text-[#CC0000] hover:bg-[#CC0000] hover:text-white font-semibold px-6 py-3 rounded transition-colors"
+              className="inline-flex items-center gap-2 border border-gray-300 text-[#1A1A1A] hover:border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white font-semibold px-6 py-3 rounded transition-colors"
             >
-              See All Services
+              See All 37 Services
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
