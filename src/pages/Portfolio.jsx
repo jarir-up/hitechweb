@@ -99,6 +99,7 @@ export default function Portfolio() {
                       <img
                         src={item.imageSrc}
                         alt={item.title}
+                        loading="lazy"
                         className="w-full h-44 object-cover flex-shrink-0"
                       />
                     ) : (

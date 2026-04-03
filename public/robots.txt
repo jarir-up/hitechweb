@@ -1,0 +1,29 @@
+# Hi-Tech Printers — robots.txt
+# https://hitechprinters.com.pk
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# OpenAI / ChatGPT
+User-agent: GPTBot
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+# Anthropic / Claude
+User-agent: ClaudeBot
+Allow: /
+
+# Google
+User-agent: Googlebot
+Allow: /
+
+# Bing / ChatGPT browsing
+User-agent: Bingbot
+Allow: /
+
+# Sitemap location
+Sitemap: https://hitechprinters.com.pk/sitemap.xml
