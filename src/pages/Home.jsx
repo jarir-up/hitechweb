@@ -1,30 +1,96 @@
-import { motion } from 'framer-motion'
+import { motion, useInView, animate } from 'framer-motion'
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 
 const WHATSAPP_URL = `https://wa.me/923343219844?text=Hello%2C%20I'd%20like%20to%20get%20a%20quote%20from%20Hi-Tech%20Printers.`
 
+/* ── easing ─────────────────────────────────────────────────── */
+const ease = [0.22, 1, 0.36, 1]
+
 /* ── animation variants ─────────────────────────────────────── */
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: 'easeOut' } },
+  hidden: { opacity: 0, y: 36 },
+  show:   { opacity: 1, y: 0,  transition: { duration: 0.65, ease } },
 }
-
+const fadeIn = {
+  hidden: { opacity: 0 },
+  show:   { opacity: 1, transition: { duration: 0.7, ease } },
+}
 const stagger = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
+  show:   { transition: { staggerChildren: 0.1 } },
 }
-
+const staggerSm = {
+  hidden: {},
+  show:   { transition: { staggerChildren: 0.07, delayChildren: 0.45 } },
+}
 const sectionReveal = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
+  hidden: { opacity: 0, y: 30 },
+  show:   { opacity: 1, y: 0,  transition: { duration: 0.65, ease } },
 }
 
-/* ── static data ────────────────────────────────────────────── */
-const trustStats = [
-  { value: '20+',  label: 'Years in Business' },
-  { value: '500+', label: 'Clients Served' },
-  { value: 'Offset', label: 'Press Quality' },
-  { value: 'Citywide', label: 'Delivery Across Karachi' },
+/* ── glass helpers ──────────────────────────────────────────── */
+const glass = (a = 0.07, blur = 24) => ({
+  background: `rgba(255,255,255,${a})`,
+  backdropFilter: `blur(${blur}px) saturate(180%)`,
+  WebkitBackdropFilter: `blur(${blur}px) saturate(180%)`,
+  border: '1px solid rgba(255,255,255,0.11)',
+  boxShadow: '0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06)',
+})
+
+/* ── data ───────────────────────────────────────────────────── */
+const stats = [
+  {
+    value: '20+',
+    count: 20,
+    suffix: '+',
+    label: 'Years in Business',
+    sub: 'Serving Karachi since 2005',
+    color: '#CC0000',
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.7} viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+  },
+  {
+    value: '500+',
+    count: 500,
+    suffix: '+',
+    label: 'Happy Clients',
+    sub: 'Corporate, schools & industry',
+    color: '#1A3A6B',
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.7} viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+      </svg>
+    ),
+  },
+  {
+    value: '4-Color',
+    label: 'Offset Precision',
+    sub: 'CMYK registration every run',
+    color: '#0D6B6B',
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.7} viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+      </svg>
+    ),
+  },
+  {
+    value: '7+',
+    count: 7,
+    suffix: '+',
+    label: 'Districts Served',
+    sub: 'SITE · Korangi · DHA · Clifton',
+    color: '#5B2C8D',
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.7} viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    ),
+  },
 ]
 
 const serviceCategories = [
@@ -34,13 +100,17 @@ const serviceCategories = [
     name: 'Corporate Stationery',
     description: 'Business cards, letterheads, envelopes, and notepads branded to your identity.',
     href: '/services',
+    accent: '#1A3A6B',
+    gradTo: '#0D1F3C',
   },
   {
     id: 'marketing',
     icon: '📣',
     name: 'Marketing & Promo',
-    description: 'Brochures, flyers, catalogues, and calendars that drive results.',
+    description: 'Brochures, flyers, catalogues, and calendars that drive real results.',
     href: '/services',
+    accent: '#0D6B6B',
+    gradTo: '#054040',
   },
   {
     id: 'packaging',
@@ -48,13 +118,17 @@ const serviceCategories = [
     name: 'Packaging & Labels',
     description: 'Custom die-cut packaging and pharma-grade labels for retail and industry.',
     href: '/services',
+    accent: '#5B2C8D',
+    gradTo: '#3A1A5F',
   },
   {
     id: 'school',
     icon: '🎓',
     name: 'School & Institutional',
-    description: 'Registers, notebooks, admission forms, and prospectuses for educational bodies.',
+    description: 'Registers, notebooks, admission forms, and prospectuses for educators.',
     href: '/services',
+    accent: '#1A6B3C',
+    gradTo: '#0D3D22',
   },
   {
     id: 'event',
@@ -62,6 +136,8 @@ const serviceCategories = [
     name: 'Event & Occasion',
     description: 'Invitations, posters, banners, and programmes for every kind of event.',
     href: '/services',
+    accent: '#CC6600',
+    gradTo: '#7A3D00',
   },
   {
     id: 'bulk',
@@ -69,54 +145,56 @@ const serviceCategories = [
     name: 'Bulk & Custom',
     description: 'High-volume runs with quantity discounts — fully customised to your spec.',
     href: '/services',
+    accent: '#2A2A2A',
+    gradTo: '#111111',
   },
+]
+
+const portfolioHighlights = [
+  { src: '/images/Business card Deck-Hitech Printers-Image 2.webp', client: 'Hi-Tech Printers', type: 'Business Cards' },
+  { src: '/images/A4 Brochure Bifold-ICMA Pakistan.webp',           client: 'ICMA Pakistan',   type: 'A4 Bifold Brochure' },
+  { src: '/images/A4 Flyer TriFold-Pulevlor.webp',                  client: 'Pulevlor',        type: 'A4 Trifold Flyer' },
+  { src: '/images/Diary- Dar e Arqam Schools.webp',                  client: 'Dar e Arqam Schools', type: 'School Diary' },
+  { src: '/images/Prospectus Book-Cadet College Karampur.webp',      client: 'Cadet College Karampur', type: 'Admissions Prospectus' },
+  { src: '/images/Wedding Cards.webp',                               client: 'Private Client',  type: 'Wedding Cards' },
 ]
 
 const whyItems = [
   {
     icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
+      <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.7} viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
       </svg>
     ),
     title: 'Offset Quality',
-    description:
-      'Our professional offset press delivers razor-sharp registration, vibrant CMYK colour, and consistent output — run after run.',
+    description: 'Professional offset press delivering razor-sharp CMYK registration, vibrant colour, and consistent results — run after run.',
   },
   {
     icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
+      <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.7} viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
     ),
     title: 'Fast Turnaround',
-    description:
-      "Standard jobs turn around in 2\u20133 days. Rush 24-hour printing available when your deadline can't wait.",
+    description: "Standard jobs ready in 2–3 days. Rush 24-hour printing available when your deadline can't wait.",
   },
   {
     icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24">
+      <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth={1.7} viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
         <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
     ),
     title: 'Karachi Delivery',
-    description:
-      'We deliver to SITE, Nazimabad, Korangi, DHA, Clifton, and everywhere in between — on schedule.',
+    description: 'We deliver to SITE, Nazimabad, Korangi, DHA, Clifton, and everywhere in between — on your schedule.',
   },
 ]
 
-/* ── Category accent colours ────────────────────────────────── */
-const categoryColor = {
-  corporate: '#1A3A6B',
-  marketing:  '#0D6B6B',
-  packaging:  '#5B2C8D',
-  school:     '#1A6B3C',
-  event:      '#CC6600',
-  bulk:       '#2A2A2A',
-}
+const heroCards = [
+  { src: '/images/Business card Deck-Hitech Printers-Image 2.webp', label: 'Business Card Deck',  floatDuration: 7,  delay: 0   },
+  { src: '/images/A4 Brochure Bifold-ICMA Pakistan.webp',           label: 'A4 Bifold Brochure', floatDuration: 6,  delay: 1.8 },
+]
 
-/* ── WhatsApp SVG icon ──────────────────────────────────────── */
 function WhatsAppIcon({ className = 'w-5 h-5' }) {
   return (
     <svg className={className} fill="currentColor" viewBox="0 0 24 24">
@@ -125,272 +203,663 @@ function WhatsAppIcon({ className = 'w-5 h-5' }) {
   )
 }
 
+/* ── Animated counter ───────────────────────────────────────── */
+function Counter({ to, suffix = '', duration = 1.8 }) {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-60px' })
+  useEffect(() => {
+    if (!inView || !ref.current) return
+    const ctrl = animate(0, to, {
+      duration,
+      ease: [0.22, 1, 0.36, 1],
+      onUpdate(v) { if (ref.current) ref.current.textContent = Math.round(v) + suffix },
+    })
+    return () => ctrl.stop()
+  }, [inView, to, suffix, duration])
+  return <span ref={ref}>0{suffix}</span>
+}
+
+/* ── Section label component ────────────────────────────────── */
+function SectionLabel({ children }) {
+  return (
+    <p className="text-[#CC0000] text-[11px] font-bold uppercase tracking-[0.22em] mb-3">
+      {children}
+    </p>
+  )
+}
+
 /* ══════════════════════════════════════════════════════════════ */
 export default function Home() {
   return (
     <div className="pt-16">
 
-      {/* ── 1. HERO ─────────────────────────────────────────── */}
-      <section className="relative bg-[#1A1A1A] text-white overflow-hidden min-h-[560px] flex items-center">
+      {/* ══ 1. HERO ══════════════════════════════════════════ */}
+      <section className="relative bg-[#0D0D0D] text-white overflow-hidden min-h-[100svh] flex flex-col justify-center">
 
-        {/* animated geometric pattern */}
+        {/* Background photo */}
+        <div className="absolute inset-0">
+          <img
+            src="/images/Business card Deck-Hitech Printers.webp"
+            alt=""
+            className="w-full h-full object-cover object-center"
+            style={{ opacity: 0.16 }}
+            loading="eager"
+          />
+          <div className="absolute inset-0" style={{
+            background: 'linear-gradient(110deg, rgba(13,13,13,0.98) 0%, rgba(13,13,13,0.8) 48%, rgba(13,13,13,0.2) 100%)',
+          }} />
+          <div className="absolute inset-x-0 bottom-0 h-40" style={{
+            background: 'linear-gradient(to top, #111111, transparent)',
+          }} />
+        </div>
+
+        {/* Ambient orbs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {/* subtle grid */}
+          <div className="absolute inset-0" style={{
+            backgroundImage:
+              'repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,0.016) 60px,rgba(255,255,255,0.016) 61px),' +
+              'repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,0.016) 60px,rgba(255,255,255,0.016) 61px)',
+          }} />
+          <motion.div
+            className="absolute -top-40 -right-20 w-[700px] h-[700px] rounded-full"
+            style={{ background: 'radial-gradient(circle,rgba(204,0,0,0.16) 0%,transparent 65%)' }}
+            animate={{ scale: [1, 1.1, 1], opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute -bottom-40 -left-20 w-[500px] h-[500px] rounded-full"
+            style={{ background: 'radial-gradient(circle,rgba(91,44,141,0.13) 0%,transparent 65%)' }}
+            animate={{ scale: [1, 1.15, 1] }}
+            transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+          />
+          <motion.div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: 'repeating-linear-gradient(45deg,transparent,transparent 80px,rgba(204,0,0,0.03) 80px,rgba(204,0,0,0.03) 81px)',
+            }}
+            animate={{ backgroundPositionX: ['0px', '160px'] }}
+            transition={{ duration: 26, repeat: Infinity, ease: 'linear' }}
+          />
+        </div>
+
+        {/* Content */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_400px] gap-10 xl:gap-20 items-center">
+
+            {/* LEFT */}
+            <motion.div variants={stagger} initial="hidden" animate="show" className="max-w-2xl">
+
+              <motion.div
+                variants={fadeUp}
+                className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full mb-7 text-[#FF5555]"
+                style={{
+                  background: 'rgba(204,0,0,0.13)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(204,0,0,0.28)',
+                }}
+              >
+                <span className="w-1.5 h-1.5 bg-[#FF5555] rounded-full animate-pulse" />
+                20+ Years of Precision Offset Printing
+              </motion.div>
+
+              <motion.h1
+                variants={fadeUp}
+                className="text-6xl sm:text-7xl md:text-[5.5rem] font-black leading-[0.9] tracking-tighter mb-7"
+              >
+                Karachi's
+                <br />
+                <span
+                  className="text-[#CC0000]"
+                  style={{ textShadow: '0 0 80px rgba(204,0,0,0.35)' }}
+                >
+                  Precision
+                </span>
+                <br />
+                Print House
+              </motion.h1>
+
+              <motion.p variants={fadeUp} className="text-[17px] text-white/60 mb-10 max-w-[480px] leading-relaxed">
+                Delivering sharp, vibrant offset printing since 2005 — trusted by corporate offices, schools, pharma, and textile clients across Karachi.
+              </motion.p>
+
+              <motion.div variants={fadeUp} className="flex flex-wrap gap-3 mb-10">
+                <Link
+                  to="/services"
+                  className="inline-flex items-center gap-2 font-semibold px-7 py-3.5 rounded-xl text-white transition-all duration-200 hover:scale-[1.03]"
+                  style={glass(0.1, 14)}
+                >
+                  View Services
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+                <a
+                  href={WHATSAPP_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-white font-semibold px-7 py-3.5 rounded-xl transition-all duration-200 hover:scale-[1.03] hover:bg-[#1EB854]"
+                  style={{ background: '#25D366', boxShadow: '0 4px 24px rgba(37,211,102,0.4)' }}
+                >
+                  <WhatsAppIcon />
+                  WhatsApp Us Now
+                </a>
+              </motion.div>
+
+              {/* Process chips — distinct from the stats band below */}
+              <motion.div variants={staggerSm} initial="hidden" animate="show" className="flex flex-wrap gap-2">
+                {[
+                  ['2–3 Day', 'Turnaround'],
+                  ['Rush', '24 hr Available'],
+                  ['Free', 'Quote'],
+                  ['Walk-ins', 'Welcome'],
+                ].map(([val, lbl]) => (
+                  <motion.div
+                    key={lbl}
+                    variants={fadeUp}
+                    className="flex items-baseline gap-1.5 px-3.5 py-1.5 rounded-full text-sm"
+                    style={glass(0.06, 10)}
+                    whileHover={{ scale: 1.05, transition: { duration: 0.15 } }}
+                  >
+                    <span className="font-black text-white text-[15px]">{val}</span>
+                    <span className="text-white/40 text-xs">{lbl}</span>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </motion.div>
+
+            {/* RIGHT: floating product cards */}
+            <motion.div
+              className="hidden lg:flex flex-col gap-3 items-center"
+              initial={{ opacity: 0, x: 52, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ duration: 0.9, delay: 0.4, ease }}
+            >
+              {heroCards.map((card, i) => (
+                <motion.div
+                  key={card.label}
+                  className="relative rounded-2xl overflow-hidden w-full"
+                  style={{
+                    ...glass(0.09, 20),
+                    boxShadow: '0 28px 72px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05)',
+                    ...(i === 1 ? { width: '80%', alignSelf: 'flex-end' } : {}),
+                  }}
+                  animate={{ y: [i === 0 ? -10 : 0, i === 0 ? 0 : -12, i === 0 ? -10 : 0] }}
+                  transition={{ duration: card.floatDuration, repeat: Infinity, ease: 'easeInOut', delay: card.delay }}
+                >
+                  <div className="overflow-hidden" style={{ height: i === 0 ? 190 : 150 }}>
+                    <img
+                      src={card.src}
+                      alt={card.label}
+                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                      loading="eager"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 h-16" style={{ background: 'linear-gradient(to top,rgba(0,0,0,0.6),transparent)' }} />
+                  </div>
+                  <div className="px-4 py-3">
+                    <div className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-0.5">Portfolio</div>
+                    <div className="text-sm font-bold text-white/90">{card.label}</div>
+                  </div>
+                </motion.div>
+              ))}
+              <motion.div
+                className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-white/70 mt-1"
+                style={glass(0.06, 10)}
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <span className="w-2 h-2 rounded-full bg-[#25D366]" style={{ boxShadow: '0 0 8px rgba(37,211,102,0.9)' }} />
+                Based in S.I.T.E, Karachi
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
         <motion.div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1.2 }}
+          transition={{ delay: 1.5, duration: 0.6 }}
         >
-          {/* static grid */}
-          <div
-            className="absolute inset-0 opacity-[0.04]"
-            style={{
-              backgroundImage:
-                'repeating-linear-gradient(0deg, transparent, transparent 48px, rgba(255,255,255,0.6) 48px, rgba(255,255,255,0.6) 49px),' +
-                'repeating-linear-gradient(90deg, transparent, transparent 48px, rgba(255,255,255,0.6) 48px, rgba(255,255,255,0.6) 49px)',
-            }}
-          />
-          {/* slowly drifting diagonal stripes */}
+          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/25">Scroll</span>
           <motion.div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage:
-                'repeating-linear-gradient(45deg, transparent, transparent 60px, rgba(204,0,0,0.9) 60px, rgba(204,0,0,0.9) 61px)',
-            }}
-            animate={{ backgroundPositionX: ['0px', '120px'] }}
-            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-          />
-          {/* red corner glow */}
-          <div
-            className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full opacity-10"
-            style={{ background: 'radial-gradient(circle, #CC0000 0%, transparent 70%)' }}
-          />
+            animate={{ y: [0, 7, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <svg className="w-4 h-4 text-white/25" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </motion.div>
         </motion.div>
+      </section>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 md:py-36">
+      {/* ══ 2. STATS BAND ════════════════════════════════════ */}
+      <section className="py-16 bg-[#111111]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             variants={stagger}
             initial="hidden"
-            animate="show"
-            className="max-w-3xl"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+            className="grid grid-cols-2 lg:grid-cols-4 gap-4"
           >
-            {/* badge */}
-            <motion.div
-              variants={fadeUp}
-              className="inline-flex items-center gap-2 bg-[#CC0000]/20 border border-[#CC0000]/30 text-[#CC0000] text-sm font-medium px-3 py-1.5 rounded-full mb-6"
-            >
-              <span className="w-1.5 h-1.5 bg-[#CC0000] rounded-full animate-pulse" />
-              20+ Years of Precision Offset Printing
-            </motion.div>
-
-            <motion.h1
-              variants={fadeUp}
-              className="text-4xl md:text-6xl font-black leading-tight mb-4"
-            >
-              Karachi's Precision
-              <br />
-              <span className="text-[#CC0000]">Print House</span>
-            </motion.h1>
-
-            <motion.p variants={fadeUp} className="text-lg md:text-xl text-gray-300 mb-8 max-w-xl leading-relaxed">
-              Delivering sharp, vibrant offset printing since 2005 — over 20 years of trusted quality for corporate offices, schools, pharma, and textile clients across Karachi.
-            </motion.p>
-
-            <motion.div variants={fadeUp} className="flex flex-wrap gap-3">
-              <Link
-                to="/services"
-                className="inline-flex items-center gap-2 border border-white/25 hover:border-white/60 text-white font-semibold px-6 py-3 rounded transition-colors"
+            {stats.map((s) => (
+              <motion.div
+                key={s.label}
+                variants={fadeUp}
+                className="relative rounded-2xl p-6 overflow-hidden group"
+                style={glass(0.05, 16)}
+                whileHover={{ scale: 1.03, transition: { duration: 0.22 } }}
               >
-                View Services
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#CC0000] hover:bg-[#A30000] text-white font-semibold px-6 py-3 rounded transition-colors"
-              >
-                <WhatsAppIcon />
-                WhatsApp Us Now
-              </a>
-            </motion.div>
+                {/* top glow line */}
+                <div className="absolute inset-x-0 top-0 h-[1px]" style={{
+                  background: `linear-gradient(90deg, transparent, ${s.color}80, transparent)`,
+                }} />
+
+                {/* ambient color glow on hover */}
+                <motion.div
+                  className="absolute inset-0 rounded-2xl pointer-events-none"
+                  style={{ background: `radial-gradient(ellipse at 30% 30%, ${s.color}22 0%, transparent 65%)` }}
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+
+                {/* pulsing icon */}
+                <motion.div
+                  className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
+                  style={{ background: s.color + '20', color: s.color, border: `1px solid ${s.color}30` }}
+                  animate={{ boxShadow: [`0 0 0px ${s.color}00`, `0 0 16px ${s.color}55`, `0 0 0px ${s.color}00`] }}
+                  transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: Math.random() * 2 }}
+                >
+                  {s.icon}
+                </motion.div>
+
+                <div className="text-3xl font-black text-white mb-1">
+                  {s.count != null
+                    ? <Counter to={s.count} suffix={s.suffix} />
+                    : s.value
+                  }
+                </div>
+                <div className="text-sm font-semibold text-white/70 mb-0.5">{s.label}</div>
+                <div className="text-[11px] text-white/35 leading-snug">{s.sub}</div>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
 
-      {/* ── 2. TRUST BAR ────────────────────────────────────── */}
-      <motion.section
-        variants={sectionReveal}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.3 }}
-        className="bg-[#2A1414]"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-white text-center divide-x-0 md:divide-x divide-white/10">
-            {trustStats.map(({ value, label }) => (
-              <div key={label} className="px-4">
-                <div className="text-2xl md:text-3xl font-black tracking-tight">{value}</div>
-                <div className="text-sm text-white/60 mt-1 leading-snug">{label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </motion.section>
-
-      {/* ── 3. SERVICES PREVIEW ─────────────────────────────── */}
-      <motion.section
-        variants={sectionReveal}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.15 }}
-        className="py-20 bg-[#F5F0EB]"
-      >
+      {/* ══ 3. SERVICES PREVIEW ══════════════════════════════ */}
+      <section className="py-24 bg-[#F5F0EB]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-black text-[#1A1A1A] mb-3">
+          <motion.div
+            className="text-center mb-14"
+            variants={sectionReveal}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.4 }}
+          >
+            <SectionLabel>What We Do</SectionLabel>
+            <h2 className="text-3xl md:text-5xl font-black text-[#1A1A1A] mb-4 tracking-tight">
               What We Print
             </h2>
-            <p className="text-gray-600 max-w-xl mx-auto">
-              Full-service offset printing across six specialised categories — all on one press, all under one roof.
+            <p className="text-gray-500 max-w-lg mx-auto text-[15px] leading-relaxed">
+              Six specialised categories, one trusted press, all under one roof in SITE, Karachi.
             </p>
-          </div>
+          </motion.div>
 
           <motion.div
             variants={stagger}
             initial="hidden"
             whileInView="show"
-            viewport={{ once: true, amount: 0.1 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            viewport={{ once: true, amount: 0.05 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
           >
-            {serviceCategories.map((cat) => {
-              const accent = categoryColor[cat.id] ?? '#1A1A1A'
-              return (
-                <motion.div
-                  key={cat.id}
-                  variants={fadeUp}
-                  className="bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-gray-200 hover:shadow-md transition-all duration-200 flex flex-col group"
+            {serviceCategories.map((cat) => (
+              <motion.div
+                key={cat.id}
+                variants={fadeUp}
+                className="bg-white rounded-2xl overflow-hidden flex flex-col group"
+                style={{
+                  border: '1px solid rgba(0,0,0,0.06)',
+                  boxShadow: '0 2px 16px rgba(0,0,0,0.05)',
+                  transformStyle: 'preserve-3d',
+                  perspective: '700px',
+                }}
+                whileHover={{
+                  y: -8,
+                  rotateX: -2,
+                  rotateY: 3,
+                  boxShadow: `0 28px 56px rgba(0,0,0,0.14), 0 0 0 1px ${cat.accent}50`,
+                  transition: { type: 'spring', stiffness: 260, damping: 22 },
+                }}
+              >
+                {/* Gradient header */}
+                <div
+                  className="relative h-[108px] flex items-center justify-center flex-shrink-0 overflow-hidden"
+                  style={{
+                    background: `linear-gradient(135deg, ${cat.accent} 0%, ${cat.gradTo} 100%)`,
+                  }}
                 >
-                  {/* accent bar */}
-                  <div className="h-[3px] w-full flex-shrink-0" style={{ backgroundColor: accent }} />
+                  {/* subtle grid pattern inside header */}
+                  <div className="absolute inset-0" style={{
+                    backgroundImage: 'repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,0.03) 20px,rgba(255,255,255,0.03) 21px)',
+                  }} />
+                  <span className="relative text-4xl" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))' }}>
+                    {cat.icon}
+                  </span>
+                  {/* bottom fade */}
+                  <div className="absolute inset-x-0 bottom-0 h-8" style={{ background: 'linear-gradient(to top,rgba(0,0,0,0.15),transparent)' }} />
+                </div>
 
-                  <div className="p-6 flex flex-col flex-1">
-                    {/* icon + name */}
-                    <div className="flex items-start gap-3 mb-3">
-                      <div
-                        className="w-11 h-11 rounded-lg flex items-center justify-center text-2xl flex-shrink-0"
-                        style={{ backgroundColor: accent + '15' }}
-                      >
-                        {cat.icon}
-                      </div>
-                      <h3 className="text-[15px] font-bold text-[#1A1A1A] leading-snug pt-2">
-                        {cat.name}
-                      </h3>
-                    </div>
-
-                    <p className="text-sm text-gray-500 leading-relaxed flex-1 mb-4">
-                      {cat.description}
-                    </p>
-
-                    <div className="border-t border-gray-100 pt-3 mt-auto">
-                      <Link
-                        to={cat.href}
-                        className="inline-flex items-center gap-1.5 text-[13px] font-semibold transition-colors"
-                        style={{ color: accent }}
-                      >
-                        Explore
-                        <svg className="w-3 h-3 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </Link>
-                    </div>
+                <div className="p-6 flex flex-col flex-1">
+                  <h3 className="text-[15px] font-bold text-[#1A1A1A] mb-2">{cat.name}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed flex-1 mb-4">{cat.description}</p>
+                  <div className="border-t border-gray-100 pt-3 mt-auto">
+                    <Link
+                      to={cat.href}
+                      className="inline-flex items-center gap-1.5 text-[13px] font-semibold transition-all duration-200 group-hover:gap-3"
+                      style={{ color: cat.accent }}
+                    >
+                      Explore →
+                    </Link>
                   </div>
-                </motion.div>
-              )
-            })}
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
 
-          <div className="text-center mt-10">
+          <motion.div
+            className="text-center mt-12"
+            variants={fadeIn}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+          >
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 border border-gray-300 text-[#1A1A1A] hover:border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white font-semibold px-6 py-3 rounded transition-colors"
+              className="inline-flex items-center gap-2 border-2 border-[#1A1A1A] text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white font-semibold px-8 py-3.5 rounded-xl transition-all duration-200"
             >
               See All 37 Services
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </Link>
-          </div>
+          </motion.div>
         </div>
-      </motion.section>
+      </section>
 
-      {/* ── 4. WHY HI-TECH ──────────────────────────────────── */}
-      <motion.section
-        variants={sectionReveal}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.2 }}
-        className="py-20 bg-white"
-      >
+      {/* ══ 4. PORTFOLIO STRIP ═══════════════════════════════ */}
+      <section className="py-24 bg-[#0F0F0F]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-black text-[#1A1A1A] mb-3">
-              Why Hi-Tech?
+          <motion.div
+            className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12"
+            variants={sectionReveal}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            <div>
+              <SectionLabel>Our Work</SectionLabel>
+              <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight">
+                Work That Speaks
+                <br />
+                <span className="text-[#CC0000]">For Itself</span>
+              </h2>
+            </div>
+            <Link
+              to="/portfolio"
+              className="flex-shrink-0 inline-flex items-center gap-2 text-sm font-semibold text-white/60 hover:text-white transition-colors group"
+            >
+              View Full Portfolio
+              <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </motion.div>
+
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.05 }}
+            className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4"
+            style={{ gridAutoRows: '200px' }}
+          >
+            {portfolioHighlights.map((item, i) => (
+              <motion.div
+                key={i}
+                variants={fadeUp}
+                className={`relative rounded-2xl overflow-hidden group cursor-pointer${i === 0 ? ' md:row-span-2' : ''}`}
+                style={{ aspectRatio: i === 0 ? undefined : '4/3' }}
+                whileHover="hovered"
+                whileTap={{ scale: 0.98 }}
+              >
+                <img
+                  src={item.src}
+                  alt={item.client}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+
+                {/* Hover overlay */}
+                <motion.div
+                  className="absolute inset-0 flex flex-col justify-end p-4"
+                  initial={{ opacity: 0 }}
+                  variants={{ hovered: { opacity: 1 } }}
+                  transition={{ duration: 0.2 }}
+                  style={{
+                    background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)',
+                    backdropFilter: 'blur(2px)',
+                    WebkitBackdropFilter: 'blur(2px)',
+                  }}
+                >
+                  <div className="text-[10px] font-semibold uppercase tracking-widest text-white/50 mb-0.5">{item.type}</div>
+                  <div className="text-sm font-bold text-white">{item.client}</div>
+                </motion.div>
+
+                {/* Always-visible bottom fade on mobile */}
+                <div
+                  className="absolute inset-x-0 bottom-0 h-16 md:hidden"
+                  style={{ background: 'linear-gradient(to top,rgba(0,0,0,0.7),transparent)' }}
+                />
+                <div className="absolute bottom-0 left-0 p-3 md:hidden">
+                  <div className="text-xs font-bold text-white/90">{item.client}</div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.div
+            className="text-center mt-10"
+            variants={fadeIn}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+          >
+            <Link
+              to="/portfolio"
+              className="inline-flex items-center gap-2 font-semibold px-8 py-3.5 rounded-xl text-white transition-all duration-200 hover:scale-[1.03]"
+              style={glass(0.08, 14)}
+            >
+              Browse All Projects
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ══ 5. WHY HI-TECH ═══════════════════════════════════ */}
+      <section className="py-24 bg-[#0D0D0D]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            className="text-center mb-16"
+            variants={sectionReveal}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.4 }}
+          >
+            <SectionLabel>Our Edge</SectionLabel>
+            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
+              Why Choose Hi-Tech?
             </h2>
-            <p className="text-gray-500 max-w-lg mx-auto">
-              Three reasons Karachi's businesses keep coming back.
+            <p className="text-white/40 max-w-lg mx-auto text-[15px]">
+              Three reasons Karachi's businesses keep coming back, decade after decade.
             </p>
-          </div>
+          </motion.div>
 
           <motion.div
             variants={stagger}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.1 }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            className="grid grid-cols-1 md:grid-cols-3 gap-5"
           >
-            {whyItems.map((item) => (
+            {whyItems.map((item, i) => (
               <motion.div
                 key={item.title}
                 variants={fadeUp}
-                className="flex flex-col items-center text-center p-8 rounded-2xl border border-gray-100 hover:border-[#CC0000]/30 hover:shadow-md transition-all group"
+                className="relative rounded-2xl p-8 overflow-hidden"
+                style={{
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  borderTop: '3px solid #CC0000',
+                }}
+                whileHover={{
+                  background: 'rgba(255,255,255,0.06)',
+                  boxShadow: '0 12px 48px rgba(204,0,0,0.18)',
+                  transition: { duration: 0.25 },
+                }}
               >
-                <div className="w-16 h-16 flex items-center justify-center rounded-full bg-[#CC0000]/10 text-[#CC0000] mb-5 group-hover:bg-[#CC0000] group-hover:text-white transition-colors">
+                {/* Shimmer sweep on hover */}
+                <motion.div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background: 'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.06) 50%, transparent 70%)',
+                    backgroundSize: '200% 100%',
+                  }}
+                  initial={{ backgroundPositionX: '-100%' }}
+                  whileHover={{ backgroundPositionX: '200%' }}
+                  transition={{ duration: 0.65, ease: 'easeInOut' }}
+                />
+
+                {/* Ghost ordinal */}
+                <span
+                  className="absolute top-4 right-4 font-black text-white/[0.04] select-none leading-none"
+                  style={{ fontSize: '5rem' }}
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+
+                <motion.div
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center text-[#CC0000] mb-6"
+                  style={{ background: 'rgba(204,0,0,0.1)', border: '1px solid rgba(204,0,0,0.18)' }}
+                  animate={{ boxShadow: ['0 0 0px rgba(204,0,0,0)', '0 0 20px rgba(204,0,0,0.4)', '0 0 0px rgba(204,0,0,0)'] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: i * 1.1 }}
+                >
                   {item.icon}
-                </div>
-                <h3 className="text-xl font-bold text-[#1A1A1A] mb-3">{item.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{item.description}</p>
+                </motion.div>
+
+                <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                <p className="text-white/45 text-sm leading-relaxed">{item.description}</p>
               </motion.div>
             ))}
           </motion.div>
         </div>
-      </motion.section>
+      </section>
 
-      {/* ── 5. CTA BANNER ───────────────────────────────────── */}
-      <motion.section
-        variants={sectionReveal}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.4 }}
-        className="bg-[#2A1414] py-16"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
-          <h2 className="text-3xl md:text-4xl font-black mb-3">Ready to Print?</h2>
-          <p className="text-white/60 mb-8 text-lg max-w-lg mx-auto">
-            Send us your design on WhatsApp and get a quote in minutes.
-          </p>
-          <a
-            href={WHATSAPP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-white text-[#2A1414] hover:bg-gray-100 font-bold px-8 py-3.5 rounded transition-colors"
-          >
-            <WhatsAppIcon />
-            WhatsApp Us Now
-          </a>
+      {/* ══ 6. CTA BANNER ════════════════════════════════════ */}
+      <section className="relative overflow-hidden py-28 text-white">
+        {/* Background photo */}
+        <div className="absolute inset-0">
+          <img
+            src="/images/Full Portfolio Landscape for AI.webp"
+            alt=""
+            className="w-full h-full object-cover object-center"
+            style={{ opacity: 0.22 }}
+            loading="lazy"
+          />
+          <div className="absolute inset-0" style={{
+            background: 'linear-gradient(135deg, rgba(10,10,10,0.97) 0%, rgba(10,10,10,0.85) 50%, rgba(26,0,0,0.85) 100%)',
+          }} />
         </div>
-      </motion.section>
+
+        {/* Red radial glow */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(204,0,0,0.14) 0%, transparent 70%)',
+        }} />
+
+        {/* Subtle grid */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          backgroundImage:
+            'repeating-linear-gradient(0deg,transparent,transparent 48px,rgba(255,255,255,0.014) 48px,rgba(255,255,255,0.014) 49px),' +
+            'repeating-linear-gradient(90deg,transparent,transparent 48px,rgba(255,255,255,0.014) 48px,rgba(255,255,255,0.014) 49px)',
+        }} />
+
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.4 }}
+          >
+            <motion.div variants={fadeUp}>
+              <SectionLabel>Let's Work Together</SectionLabel>
+            </motion.div>
+            <motion.h2
+              variants={fadeUp}
+              className="text-4xl md:text-6xl font-black mb-5 tracking-tight"
+            >
+              Ready to Print
+              <br />
+              <span className="text-[#CC0000]">Something Great?</span>
+            </motion.h2>
+            <motion.p
+              variants={fadeUp}
+              className="text-white/50 mb-10 text-lg max-w-md mx-auto leading-relaxed"
+            >
+              Send your design on WhatsApp — get a quote in minutes. No waiting, no forms.
+            </motion.p>
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-3 justify-center">
+              <motion.a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2.5 text-white font-bold px-10 py-4 rounded-2xl text-[15px] transition-all duration-200"
+                style={{ background: '#25D366', boxShadow: '0 8px 36px rgba(37,211,102,0.45)' }}
+                whileHover={{ scale: 1.04, backgroundColor: '#1EB854' }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <WhatsAppIcon className="w-5 h-5" />
+                WhatsApp Us Now
+              </motion.a>
+              <Link
+                to="/calculator"
+                className="inline-flex items-center justify-center gap-2 font-semibold px-8 py-4 rounded-2xl text-[15px] text-white transition-all duration-200 hover:scale-[1.03]"
+                style={glass(0.09, 14)}
+              >
+                Price Calculator
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </motion.div>
+
+            {/* Address line */}
+            <motion.p variants={fadeUp} className="mt-10 text-white/25 text-sm flex items-center justify-center gap-2">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              D-123/A, S.I.T.E Industrial Area, Near Bawani Chali, Karachi
+            </motion.p>
+          </motion.div>
+        </div>
+      </section>
 
     </div>
   )

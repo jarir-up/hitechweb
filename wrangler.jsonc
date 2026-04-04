@@ -10,5 +10,9 @@
   },
   "compatibility_flags": [
     "nodejs_compat"
+  ],
+  "routes": [
+    { "pattern": "hitechprinters.com.pk", "custom_domain": true },
+    { "pattern": "www.hitechprinters.com.pk", "custom_domain": true }
   ]
 }
