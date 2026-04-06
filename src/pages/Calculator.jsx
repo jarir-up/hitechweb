@@ -286,8 +286,8 @@ function buildBundleWAMessage(bundle, negotiatorActive) {
 // ── UI helpers ────────────────────────────────────────────────────────────
 function StepLabel({ n, children }) {
   return (
-    <h3 className="font-bold text-[#1A1A1A] mb-4 flex items-center gap-2 text-sm">
-      <span className="w-6 h-6 bg-[#CC0000] text-white text-xs rounded-full flex items-center justify-center font-black shrink-0">{n}</span>
+    <h3 className="font-bold text-white mb-4 flex items-center gap-2 text-sm">
+      <span className="w-6 h-6 bg-[#7E0001] text-white text-xs rounded-full flex items-center justify-center font-black shrink-0" style={{ boxShadow: '0 0 10px rgba(126,0,1,0.4)' }}>{n}</span>
       {children}
     </h3>
   )
@@ -298,11 +298,13 @@ function OptBtn({ active, onClick, children, disabled }) {
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${
-        active ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
-        : disabled ? 'border-gray-100 text-gray-300 cursor-not-allowed'
-        : 'border-gray-200 text-gray-700 hover:border-[#1A1A1A] hover:text-[#1A1A1A]'
-      }`}
+      className="px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+      style={active
+        ? { background: 'rgba(255,255,255,0.16)', color: '#fff', border: '1px solid rgba(255,255,255,0.22)' }
+        : disabled
+          ? { background: 'transparent', color: 'rgba(255,255,255,0.18)', border: '1px solid rgba(255,255,255,0.06)', cursor: 'not-allowed' }
+          : { background: 'transparent', color: 'rgba(255,255,255,0.50)', border: '1px solid rgba(255,255,255,0.10)' }
+      }
     >
       {children}
     </button>
@@ -312,10 +314,10 @@ function OptBtn({ active, onClick, children, disabled }) {
 function RadioOpt({ name, value, checked, onChange, label, note }) {
   return (
     <label className="flex items-start gap-2 cursor-pointer">
-      <input type="radio" name={name} value={value} checked={checked} onChange={onChange} className="accent-[#CC0000] mt-0.5" />
-      <span className="text-sm text-gray-700">
+      <input type="radio" name={name} value={value} checked={checked} onChange={onChange} className="calc-rb mt-0.5" />
+      <span className="text-sm" style={{ color: checked ? '#fff' : 'rgba(255,255,255,0.60)' }}>
         {label}
-        {note && <span className="text-xs text-gray-400 ml-1.5">({note})</span>}
+        {note && <span className="text-xs ml-1.5" style={{ color: 'rgba(255,255,255,0.35)' }}>({note})</span>}
       </span>
     </label>
   )
@@ -326,16 +328,16 @@ function QtySlider({ value, onChange, min, max, step }) {
   return (
     <div>
       <div className="flex items-baseline justify-between mb-3">
-        <span className="text-4xl font-black text-[#1A1A1A] tabular-nums">{value.toLocaleString()}</span>
-        <span className="text-sm text-gray-400">pieces</span>
+        <span className="text-4xl font-black text-white tabular-nums">{value.toLocaleString()}</span>
+        <span className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>pieces</span>
       </div>
       <input
         type="range" min={min} max={max} step={step} value={value}
         onChange={e => onChange(Number(e.target.value))}
-        className="w-full h-2 rounded-lg appearance-none cursor-pointer"
-        style={{ background: `linear-gradient(to right, #CC0000 ${pct}%, #E5E7EB ${pct}%)` }}
+        className="w-full h-1.5 rounded-lg appearance-none cursor-pointer"
+        style={{ background: `linear-gradient(to right, #7E0001 ${pct}%, rgba(255,255,255,0.12) ${pct}%)` }}
       />
-      <div className="flex justify-between text-xs text-gray-400 mt-1.5">
+      <div className="flex justify-between text-xs mt-1.5" style={{ color: 'rgba(255,255,255,0.30)' }}>
         <span>MOQ {min.toLocaleString()}</span>
         <span>{max.toLocaleString()}+</span>
       </div>
@@ -343,54 +345,181 @@ function QtySlider({ value, onChange, min, max, step }) {
   )
 }
 
-// ── Negotiator bot ────────────────────────────────────────────────────────
-function NegotiatorBot({ active, onClick }) {
-  const [showTip, setShowTip] = useState(false)
+// ── Claymorphic Price Tag — negotiation trigger ───────────────────────────
+function PriceTag({ active, onClick }) {
+  const [tip, setTip]         = useState(false)
+  const [wobbled, setWobbled] = useState(false)
+
+  useEffect(() => {
+    const t = setTimeout(() => setWobbled(true), 3200)
+    return () => clearTimeout(t)
+  }, [])
+
+  const tagBg     = active
+    ? 'linear-gradient(145deg, #2ECC71, #1A9C52)'
+    : 'linear-gradient(145deg, #9B59B6, #6C2D91)'
+  const tagShadow = active
+    ? '0 7px 0 #16763C, 0 12px 28px rgba(0,0,0,0.5), inset 0 1.5px 0 rgba(255,255,255,0.35), inset 0 -2px 4px rgba(0,0,0,0.18)'
+    : '0 7px 0 #4A1A72, 0 12px 28px rgba(0,0,0,0.5), inset 0 1.5px 0 rgba(255,255,255,0.28), inset 0 -2px 4px rgba(0,0,0,0.2)'
+
   return (
-    <div className="fixed right-5 bottom-32 z-40 flex flex-col items-end gap-2">
+    <div className="fixed right-5 bottom-28 z-40 flex flex-col items-center" style={{ perspective: '600px' }}>
+
+      {/* Tooltip bubble */}
       <AnimatePresence>
-        {showTip && (
+        {tip && (
           <motion.div
-            initial={{ opacity: 0, x: 20, scale: 0.9 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: 20, scale: 0.9 }}
-            transition={{ duration: 0.2 }}
-            className="bg-white border border-gray-200 rounded-xl shadow-xl p-3.5 w-56 text-xs text-gray-700 leading-relaxed"
+            initial={{ opacity: 0, x: 14, scale: 0.88 }}
+            animate={{ opacity: 1, x: 0,  scale: 1 }}
+            exit={{ opacity: 0, x: 14, scale: 0.88 }}
+            transition={{ duration: 0.18, ease: [0.22,1,0.36,1] }}
+            style={{
+              position: 'absolute',
+              right: '92px',
+              top: '12px',
+              width: '168px',
+              padding: '12px 14px',
+              borderRadius: '16px',
+              background: active
+                ? 'linear-gradient(135deg, rgba(20,52,32,0.97), rgba(14,36,22,0.97))'
+                : 'linear-gradient(135deg, rgba(30,16,46,0.97), rgba(20,10,32,0.97))',
+              backdropFilter: 'blur(20px)',
+              border: active ? '1px solid rgba(46,204,113,0.3)' : '1px solid rgba(155,89,182,0.35)',
+              boxShadow: '0 18px 40px rgba(0,0,0,0.55), 0 5px 0 rgba(0,0,0,0.3)',
+              pointerEvents: 'none',
+            }}
           >
-            {active ? (
-              <>
-                <p className="font-bold text-[#1A1A1A] mb-1">Negotiator Mode ON</p>
-                <p>Your next WhatsApp quote will flag you for a flexible price discussion. Go ahead and send it.</p>
-              </>
-            ) : (
-              <>
-                <p className="font-bold text-[#1A1A1A] mb-1">Lucky you found me!</p>
-                <p>Click to unlock price negotiation. Your quote will reach us with a special negotiation flag.</p>
-              </>
-            )}
-            <div className="absolute right-3 -bottom-1.5 w-3 h-3 bg-white border-r border-b border-gray-200 rotate-45" />
+            <p style={{ fontSize: '12px', fontWeight: 700, color: '#fff', marginBottom: '4px' }}>
+              {active ? '🤝 Deal mode is on!' : '🏷️ Secret price tag!'}
+            </p>
+            <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.55)', lineHeight: 1.45 }}>
+              {active
+                ? 'Your quote request is flagged for a flexible price discussion with us.'
+                : 'Tap to enable negotiation. Your WhatsApp quote gets a special deal flag.'}
+            </p>
           </motion.div>
         )}
       </AnimatePresence>
-      <button
-        onClick={() => { onClick(); setShowTip(true) }}
-        onMouseEnter={() => setShowTip(true)}
-        onMouseLeave={() => !active && setShowTip(false)}
-        title="Negotiator Bot"
-        className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-transform hover:scale-110 active:scale-95 ${active ? 'ring-2 ring-[#25D366] ring-offset-2' : ''}`}
-        style={{ background: active ? '#1A1A1A' : '#F5F0EB', border: '2px solid #1A1A1A' }}
+
+      {/* Hanging string */}
+      <div style={{
+        width: '2px', height: '20px',
+        background: active
+          ? 'linear-gradient(to bottom, #D4AF37, rgba(212,175,55,0.25))'
+          : 'linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,255,255,0.06))',
+        borderRadius: '1px',
+        marginBottom: '-1px',
+        transition: 'background 0.4s',
+      }} />
+
+      {/* Clay tag */}
+      <motion.button
+        onClick={() => { onClick(); setTip(s => !s) }}
+        onMouseEnter={() => setTip(true)}
+        onMouseLeave={() => !active && setTip(false)}
+        aria-label="Toggle deal negotiation mode"
+        initial={{ rotate: -9, y: 30, opacity: 0 }}
+        animate={wobbled && !active
+          ? { rotate: [-9, -17, -4, -13, -9], y: 0, opacity: 1 }
+          : active
+            ? { rotate: -4, y: 0, opacity: 1 }
+            : { rotate: -9, y: 0, opacity: 1 }
+        }
+        transition={{
+          rotate: wobbled ? { duration: 0.72, times: [0, 0.2, 0.5, 0.78, 1] } : { duration: 0.45 },
+          y:      { duration: 0.6, ease: [0.22,1,0.36,1] },
+          opacity:{ duration: 0.4 },
+        }}
+        whileHover={{ rotate: active ? -4 : -16, scale: 1.09, transition: { duration: 0.2 } }}
+        whileTap={{ scale: 0.88, rotate: 0 }}
+        style={{
+          width: '76px',
+          cursor: 'pointer',
+          transformOrigin: 'top center',
+          background: 'none',
+          border: 'none',
+          padding: 0,
+          filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.55))',
+        }}
       >
-        <svg viewBox="0 0 36 36" fill="none" className="w-8 h-8">
-          <rect x="6" y="11" width="24" height="18" rx="4" fill={active ? '#25D366' : '#1A1A1A'} />
-          <circle cx="13" cy="19" r="3" fill={active ? '#1A1A1A' : '#25D366'} />
-          <circle cx="23" cy="19" r="3" fill={active ? '#1A1A1A' : '#25D366'} />
-          <rect x="12" y="24" width="12" height="2" rx="1" fill={active ? '#1A1A1A' : '#F5F0EB'} />
-          <line x1="18" y1="11" x2="18" y2="6" stroke="#1A1A1A" strokeWidth="2" strokeLinecap="round" />
-          <circle cx="18" cy="5" r="2" fill="#CC0000" />
-          <rect x="2" y="16" width="4" height="7" rx="2" fill={active ? '#25D366' : '#1A1A1A'} />
-          <rect x="30" y="16" width="4" height="7" rx="2" fill={active ? '#25D366' : '#1A1A1A'} />
-        </svg>
-      </button>
+        <div style={{
+          background: tagBg,
+          borderRadius: '13px',
+          padding: '9px 8px 11px',
+          boxShadow: tagShadow,
+          border: active ? '1.5px solid rgba(255,255,255,0.32)' : '1.5px solid rgba(255,255,255,0.2)',
+          position: 'relative',
+          transition: 'background 0.4s, box-shadow 0.4s',
+        }}>
+          {/* Punch hole */}
+          <div style={{
+            width: '11px', height: '11px', borderRadius: '50%',
+            background: '#0E182A',
+            border: '2px solid rgba(255,255,255,0.18)',
+            margin: '0 auto 7px',
+            boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.8)',
+          }} />
+
+          <AnimatePresence mode="wait">
+            {active ? (
+              <motion.div key="on"
+                initial={{ rotateX: 90, opacity: 0 }}
+                animate={{ rotateX: 0,  opacity: 1 }}
+                exit={{ rotateX: -90,   opacity: 0 }}
+                transition={{ duration: 0.24 }}
+                style={{ textAlign: 'center' }}
+              >
+                <div style={{ fontSize: '20px', lineHeight: 1 }}>🤝</div>
+                <p style={{ fontSize: '8.5px', fontWeight: 700, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.07em', marginTop: '4px', lineHeight: 1.3 }}>
+                  Deal<br/>Mode
+                </p>
+              </motion.div>
+            ) : (
+              <motion.div key="off"
+                initial={{ rotateX: 90, opacity: 0 }}
+                animate={{ rotateX: 0,  opacity: 1 }}
+                exit={{ rotateX: -90,   opacity: 0 }}
+                transition={{ duration: 0.24 }}
+                style={{ textAlign: 'center' }}
+              >
+                <p style={{ fontSize: '9.5px', fontWeight: 600, color: 'rgba(255,255,255,0.93)', lineHeight: 1.35, letterSpacing: '0.02em' }}>
+                  Got a<br/>budget?
+                </p>
+                <div style={{
+                  marginTop: '5px',
+                  background: 'rgba(255,255,255,0.18)',
+                  borderRadius: '5px',
+                  padding: '1.5px 5px',
+                  display: 'inline-block',
+                }}>
+                  <span style={{ fontSize: '7.5px', fontWeight: 800, color: '#FFD700', letterSpacing: '0.04em' }}>% OFF</span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Pulsing fire badge */}
+        <AnimatePresence>
+          {!active && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: [1, 1.2, 1] }}
+              exit={{ scale: 0 }}
+              transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+              style={{
+                position: 'absolute', top: '-6px', right: '-6px',
+                width: '20px', height: '20px', borderRadius: '50%',
+                background: 'linear-gradient(135deg, #FF6B35, #C0392B)',
+                border: '2.5px solid #0E182A',
+                boxShadow: '0 2px 10px rgba(255,107,53,0.65)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '9px',
+              }}
+            >🔥</motion.div>
+          )}
+        </AnimatePresence>
+      </motion.button>
     </div>
   )
 }
@@ -408,23 +537,24 @@ function PriceNotification({ onDismiss }) {
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 120, opacity: 0 }}
       transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-      className="fixed top-24 right-5 z-50 bg-white border border-amber-200 rounded-xl shadow-xl p-4 w-64"
+      className="fixed top-24 right-5 z-50 rounded-xl p-4 w-64"
+      style={{ background: 'rgba(30,30,30,0.95)', backdropFilter: 'blur(20px)', border: '1px solid rgba(204,102,0,0.30)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}
     >
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex items-center gap-2">
-          <svg className="w-4 h-4 text-amber-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-4 h-4 text-amber-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
           </svg>
-          <span className="text-sm font-semibold text-[#1A1A1A]">Pricing Notice</span>
+          <span className="text-sm font-semibold text-white">Pricing Notice</span>
         </div>
-        <button onClick={onDismiss} className="text-gray-400 hover:text-gray-700 transition-colors text-lg leading-none -mt-0.5">×</button>
+        <button onClick={onDismiss} className="transition-colors text-lg leading-none -mt-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>×</button>
       </div>
-      <p className="text-sm text-gray-600 leading-relaxed mb-3">
+      <p className="text-sm leading-relaxed mb-3" style={{ color: 'rgba(255,255,255,0.55)' }}>
         Prices are estimates subject to market conditions. Final cost confirmed before production.
       </p>
-      <div className="h-0.5 bg-gray-100 rounded-full overflow-hidden">
+      <div className="h-0.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
         <motion.div
-          className="h-full bg-amber-400 rounded-full"
+          className="h-full rounded-full bg-amber-400"
           initial={{ width: '100%' }}
           animate={{ width: '0%' }}
           transition={{ duration: 7, ease: 'linear' }}
@@ -507,29 +637,59 @@ export default function Calculator() {
   let _s = 0
   const S = () => ++_s
 
+  const ease = [0.22, 1, 0.36, 1]
+  const glass = (a = 0.07, blur = 24) => ({
+    background: `rgba(255,255,255,${a})`,
+    backdropFilter: `blur(${blur}px) saturate(180%)`,
+    WebkitBackdropFilter: `blur(${blur}px) saturate(180%)`,
+    border: '1px solid rgba(255,255,255,0.10)',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.06)',
+  })
+
   return (
-    <div className="pt-16 min-h-screen bg-[#F5F0EB]">
+    <div className="pt-16 min-h-screen bg-[#0E182A]">
       <style>{`
-        input[type=range]::-webkit-slider-thumb { width:18px; height:18px; border-radius:50%; background:#CC0000; cursor:pointer; -webkit-appearance:none; border:2px solid white; box-shadow:0 1px 4px rgba(0,0,0,.25); }
-        input[type=range]::-moz-range-thumb { width:18px; height:18px; border-radius:50%; background:#CC0000; cursor:pointer; border:2px solid white; box-shadow:0 1px 4px rgba(0,0,0,.25); }
+        input[type=range]::-webkit-slider-thumb { width:18px; height:18px; border-radius:50%; background:#7E0001; cursor:pointer; -webkit-appearance:none; border:2px solid rgba(255,255,255,0.2); box-shadow:0 0 12px rgba(126,0,1,0.4); }
+        input[type=range]::-moz-range-thumb { width:18px; height:18px; border-radius:50%; background:#7E0001; cursor:pointer; border:2px solid rgba(255,255,255,0.2); box-shadow:0 0 12px rgba(126,0,1,0.4); }
+        .calc-input { background:rgba(255,255,255,0.05) !important; border:1px solid rgba(255,255,255,0.10) !important; color:#fff !important; border-radius:0.75rem; }
+        .calc-input:focus { border-color:rgba(126,0,1,0.5) !important; outline:none; }
+        input[type=number].calc-input { color-scheme:dark; }
+        input[type=checkbox].calc-cb { accent-color:#7E0001; }
+        input[type=radio].calc-rb { accent-color:#7E0001; }
+        .calc-glass-card { background:rgba(255,255,255,0.06); backdrop-filter:blur(20px) saturate(180%); -webkit-backdrop-filter:blur(20px) saturate(180%); border:1px solid rgba(255,255,255,0.10); box-shadow:0 8px 32px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.06); }
       `}</style>
 
       {/* Header */}
-      <section className="bg-[#1A1A1A] text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <div className="text-[#CC0000] text-sm font-semibold uppercase tracking-wider mb-2">Pricing Tool</div>
-            <h1 className="text-4xl md:text-5xl font-black mb-3">Print Calculator</h1>
-            <p className="text-gray-400 max-w-xl text-lg">Get a ballpark estimate instantly.<br />Final pricing confirmed via WhatsApp.</p>
+      <section className="relative bg-[#0E182A] text-white py-20 overflow-hidden">
+        <motion.div
+          className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(126,0,1,0.11) 0%, transparent 65%)' }}
+          animate={{ scale: [1, 1.1, 1], opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <div className="absolute inset-0 pointer-events-none" style={{
+          backgroundImage: 'repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,0.014) 60px,rgba(255,255,255,0.014) 61px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,0.014) 60px,rgba(255,255,255,0.014) 61px)',
+        }} />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, ease }}>
+            <p className="text-[#7E0001] text-[11px] font-bold uppercase tracking-[0.22em] mb-3">Pricing Tool</p>
+            <h1 className="text-[2.2rem] md:text-[3.2rem] font-bold leading-tight tracking-tight mb-5 text-white">
+              Print Calculator
+            </h1>
+            <p className="text-white/45 max-w-xl text-lg leading-relaxed">Get a ballpark estimate instantly. Final pricing confirmed via WhatsApp.</p>
           </motion.div>
         </div>
+        {/* Section divider */}
+        <div className="absolute inset-x-0 bottom-0 h-px" style={{
+          background: 'linear-gradient(90deg, transparent, rgba(126,0,1,0.4) 30%, rgba(126,0,1,0.4) 70%, transparent)',
+        }} />
       </section>
 
       <section className="py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Tab switcher */}
-          <div className="flex gap-1 bg-white rounded-xl p-1.5 shadow-sm border border-gray-100 mb-6 w-fit">
+          <div className="flex gap-1 rounded-xl p-1.5 mb-6 w-fit" style={glass(0.06, 16)}>
             {[
               { id: 'individual', label: 'Individual Products' },
               { id: 'bundles',    label: 'Brand in a Box' },
@@ -537,9 +697,11 @@ export default function Calculator() {
               <button
                 key={t.id}
                 onClick={() => setTab(t.id)}
-                className={`px-5 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                  tab === t.id ? 'bg-[#1A1A1A] text-white' : 'text-gray-500 hover:text-[#1A1A1A]'
-                }`}
+                className="px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200"
+                style={tab === t.id
+                  ? { background: 'rgba(255,255,255,0.14)', color: '#fff' }
+                  : { color: 'rgba(255,255,255,0.40)' }
+                }
               >
                 {t.label}
               </button>
@@ -554,10 +716,10 @@ export default function Calculator() {
               <div className="lg:col-span-2 space-y-5">
 
                 {/* ① Product selector */}
-                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                <div className="calc-glass-card rounded-2xl p-6">
                   <StepLabel n={S()}>What are you printing?</StepLabel>
-                  <p className="text-xs font-semibold text-[#1A6B3C] uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#1A6B3C] inline-block" />
+                  <p className="text-xs font-semibold uppercase tracking-wider mb-2.5 flex items-center gap-1.5" style={{ color: '#25D366' }}>
+                    <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ background: '#25D366' }} />
                     Popular · Instagram &amp; eCommerce
                   </p>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-5">
@@ -565,27 +727,29 @@ export default function Calculator() {
                       <button
                         key={p.id}
                         onClick={() => switchProduct(p.id)}
-                        className={`relative text-left px-3 py-2.5 rounded-lg text-sm font-medium border transition-colors ${
-                          product === p.id ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]' : 'border-gray-200 text-gray-700 hover:border-[#1A1A1A] hover:text-[#1A1A1A]'
+                        className={`relative text-left px-3 py-2.5 rounded-lg text-sm font-medium border transition-all duration-150 ${
+                          product === p.id ? 'text-white border-white/25' : 'border-white/10 text-white/60 hover:border-white/25 hover:text-white'
                         }`}
+                      style={product === p.id ? { background: 'rgba(126,0,1,0.25)' } : { background: 'rgba(255,255,255,0.04)' }}
                       >
                         {p.badge && (
-                          <span className="absolute -top-2 -right-1 bg-[#CC0000] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none">{p.badge}</span>
+                          <span className="absolute -top-2 -right-1 bg-[#7E0001] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none">{p.badge}</span>
                         )}
                         {p.label}
                       </button>
                     ))}
                   </div>
-                  <div className="border-t border-gray-100 pt-4">
-                    <p className="text-xs text-gray-400 uppercase tracking-wider mb-2.5">Business &amp; Corporate</p>
+                  <div className="border-t border-white/08 pt-4" style={{ borderTopColor: 'rgba(255,255,255,0.08)' }}>
+                    <p className="text-xs text-white/35 uppercase tracking-wider mb-2.5">Business &amp; Corporate</p>
                     <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5">
                       {BUSINESS_PRODUCTS.map(p => (
                         <button
                           key={p.id}
                           onClick={() => switchProduct(p.id)}
-                          className={`text-left px-2.5 py-2 rounded-lg text-xs font-medium border transition-colors ${
-                            product === p.id ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]' : 'border-gray-200 text-gray-500 hover:border-gray-400 hover:text-gray-700'
+                          className={`text-left px-2.5 py-2 rounded-lg text-xs font-medium border transition-all duration-150 ${
+                            product === p.id ? 'text-white border-white/25' : 'border-white/08 text-white/55 hover:border-white/20 hover:text-white'
                           }`}
+                          style={product === p.id ? { background: 'rgba(126,0,1,0.25)', borderColor: 'rgba(255,255,255,0.25)' } : { background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)' }}
                         >
                           {p.label}
                         </button>
@@ -596,7 +760,7 @@ export default function Calculator() {
 
                 {/* ② Sticker mode — comes before qty for stickers only */}
                 {product === 'sticker' && (
-                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                  <div className="calc-glass-card rounded-2xl p-6">
                     <StepLabel n={S()}>Print Mode</StepLabel>
                     <div className="space-y-2.5">
                       <RadioOpt name="stickerMode" value="digital" checked={stickerMode === 'digital'} onChange={() => { setStickerMode('digital'); setQty(100) }} label="Digital Printing" note="A4 & A5 · MOQ 100 · instant pricing" />
@@ -607,7 +771,7 @@ export default function Calculator() {
 
                 {/* ② / ③ Quantity slider */}
                 {!isOffsetSticker && (
-                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                  <div className="calc-glass-card rounded-2xl p-6">
                     <StepLabel n={S()}>Quantity</StepLabel>
                     <QtySlider
                       value={qty}
@@ -625,7 +789,7 @@ export default function Calculator() {
                         max={999999}
                         step={sliderCfg.step}
                         onChange={e => { setQty(Math.max(moq, parseInt(e.target.value) || moq)); triggerNotifOnce() }}
-                        className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm w-28 focus:outline-none focus:border-[#CC0000]"
+                        className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm w-28 focus:outline-none focus:border-[#7E0001]"
                       />
                     </div>
                   </div>
@@ -633,9 +797,9 @@ export default function Calculator() {
 
                 {/* Offset sticker custom quote box */}
                 {isOffsetSticker && (
-                  <div className="bg-[#F5F0EB] border border-dashed border-gray-300 rounded-xl p-5">
-                    <p className="text-sm font-semibold text-[#1A1A1A] mb-1">Offset stickers — custom quote</p>
-                    <p className="text-sm text-gray-500 leading-relaxed">Significantly lower per-unit cost at 500+ qty. Sizes are fully custom. Hit the button below and send us your size, quantity, and design — we'll quote back fast.</p>
+                  <div className="rounded-xl p-5" style={{ background: 'rgba(126,0,1,0.08)', border: '1px dashed rgba(126,0,1,0.30)' }}>
+                    <p className="text-sm font-semibold text-white mb-1">Offset stickers — custom quote</p>
+                    <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.50)' }}>Significantly lower per-unit cost at 500+ qty. Sizes are fully custom. Hit the button below and send us your size, quantity, and design — we'll quote back fast.</p>
                   </div>
                 )}
 
@@ -644,14 +808,14 @@ export default function Calculator() {
                 {/* THANK YOU CARDS */}
                 {product === 'thank_you_card' && (
                   <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <div className="calc-glass-card rounded-2xl p-6">
                       <StepLabel n={S()}>Print Sides</StepLabel>
                       <div className="space-y-2.5">
                         <RadioOpt name="tcSides" value="double" checked={tcSides === 'double'} onChange={() => setTcSides('double')} label="Double-sided" note="message on back" />
                         <RadioOpt name="tcSides" value="single" checked={tcSides === 'single'} onChange={() => setTcSides('single')} label="Single-sided" />
                       </div>
                     </div>
-                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <div className="calc-glass-card rounded-2xl p-6">
                       <StepLabel n={S()}>Lamination</StepLabel>
                       <div className="space-y-2.5">
                         <RadioOpt name="tcLam" value="matte" checked={tcLam === 'matte'} onChange={() => setTcLam('matte')} label="Matte" note="premium feel" />
@@ -664,7 +828,7 @@ export default function Calculator() {
                 {/* STICKER LABELS */}
                 {product === 'sticker_label' && (
                   <>
-                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <div className="calc-glass-card rounded-2xl p-6">
                       <StepLabel n={S()}>Shape</StepLabel>
                       <div className="flex gap-2">
                         <OptBtn active={slShape === 'round'} onClick={() => setSlShape('round')}>Round</OptBtn>
@@ -672,7 +836,7 @@ export default function Calculator() {
                       </div>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                      <div className="calc-glass-card rounded-2xl p-6">
                         <StepLabel n={S()}>Size (diameter)</StepLabel>
                         <div className="space-y-2.5">
                           <RadioOpt name="slSize" value="3cm" checked={slSize === '3cm'} onChange={() => setSlSize('3cm')} label="3 cm" note="small seal" />
@@ -680,7 +844,7 @@ export default function Calculator() {
                           <RadioOpt name="slSize" value="7cm" checked={slSize === '7cm'} onChange={() => setSlSize('7cm')} label="7 cm" note="large label" />
                         </div>
                       </div>
-                      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                      <div className="calc-glass-card rounded-2xl p-6">
                         <StepLabel n={S()}>Material</StepLabel>
                         <div className="space-y-2.5">
                           <RadioOpt name="slMat" value="paper" checked={slMaterial === 'paper'} onChange={() => setSlMaterial('paper')} label="Paper (standard)" />
@@ -693,19 +857,19 @@ export default function Calculator() {
 
                 {/* HANG TAGS */}
                 {product === 'hang_tag' && (
-                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                  <div className="calc-glass-card rounded-2xl p-6">
                     <StepLabel n={S()}>Material</StepLabel>
                     <div className="flex gap-2">
                       <OptBtn active={htMaterial === 'kraft'}  onClick={() => setHtMaterial('kraft')}>Kraft Paper</OptBtn>
                       <OptBtn active={htMaterial === 'coated'} onClick={() => setHtMaterial('coated')}>Coated Card</OptBtn>
                     </div>
-                    <p className="text-xs text-gray-400 mt-2">All hang tags include hole punch. Full CMYK. String not included.</p>
+                    <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.35)' }}>All hang tags include hole punch. Full CMYK. String not included.</p>
                   </div>
                 )}
 
                 {/* STICKER SHEETS extra option */}
                 {product === 'sticker' && stickerMode === 'digital' && (
-                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                  <div className="calc-glass-card rounded-2xl p-6">
                     <StepLabel n={S()}>Sheet Size</StepLabel>
                     <div className="flex gap-2">
                       <OptBtn active={stickerSize === 'A5'} onClick={() => setStickerSize('A5')}>A5 — PKR 20 / sheet</OptBtn>
@@ -717,23 +881,23 @@ export default function Calculator() {
                 {/* BUSINESS CARDS */}
                 {product === 'business_card' && (
                   <>
-                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <div className="calc-glass-card rounded-2xl p-6">
                       <StepLabel n={S()}>Paper Stock</StepLabel>
                       <div className="flex gap-2">
                         <OptBtn active={bcPaper === '350'} onClick={() => setBcPaper('350')}>350 GSM</OptBtn>
                         <OptBtn active={bcPaper === '300'} onClick={() => setBcPaper('300')}>300 GSM</OptBtn>
                       </div>
-                      <p className="text-xs text-gray-400 mt-2">350 GSM is premium — stiffer, better feel.</p>
+                      <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.35)' }}>350 GSM is premium — stiffer, better feel.</p>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                      <div className="calc-glass-card rounded-2xl p-6">
                         <StepLabel n={S()}>Lamination</StepLabel>
                         <div className="space-y-2.5">
                           <RadioOpt name="bcLam" value="matte" checked={bcLam === 'matte'} onChange={() => setBcLam('matte')} label="Matte" />
                           <RadioOpt name="bcLam" value="gloss" checked={bcLam === 'gloss'} onChange={() => setBcLam('gloss')} label="Gloss" note="-1 PKR/card" />
                         </div>
                       </div>
-                      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                      <div className="calc-glass-card rounded-2xl p-6">
                         <StepLabel n={S()}>Print Sides</StepLabel>
                         <div className="space-y-2.5">
                           <RadioOpt name="bcSides" value="double" checked={bcSides === 'double'} onChange={() => setBcSides('double')} label="Double-sided" />
@@ -742,10 +906,10 @@ export default function Calculator() {
                       </div>
                     </div>
                     {bcSides === 'double' && (
-                      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                      <div className="calc-glass-card rounded-2xl p-6">
                         <StepLabel n={S()}>Spot UV Coating</StepLabel>
                         <label className={`flex items-start gap-3 cursor-pointer ${qty < 1000 ? 'opacity-50 pointer-events-none' : ''}`}>
-                          <input type="checkbox" checked={bcSpotUV} disabled={qty < 1000} onChange={e => setBcSpotUV(e.target.checked)} className="accent-[#CC0000] w-4 h-4 mt-0.5" />
+                          <input type="checkbox" checked={bcSpotUV} disabled={qty < 1000} onChange={e => setBcSpotUV(e.target.checked)} className="accent-[#7E0001] w-4 h-4 mt-0.5" />
                           <span className="text-sm text-gray-700">
                             Add Spot UV
                             <span className="block text-xs text-gray-400 mt-0.5">+PKR 2/card · available at 1,000+ qty only</span>
@@ -759,21 +923,21 @@ export default function Calculator() {
                 {/* FLYER A4 */}
                 {product === 'flyer_a4' && (
                   <>
-                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <div className="calc-glass-card rounded-2xl p-6">
                       <StepLabel n={S()}>Paper Stock</StepLabel>
                       <div className="flex flex-wrap gap-2">
                         {FLYER_PAPERS.map(p => <OptBtn key={p.id} active={flyerPaper === p.id} onClick={() => setFlyerPaper(p.id)}>{p.label}</OptBtn>)}
                       </div>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                      <div className="calc-glass-card rounded-2xl p-6">
                         <StepLabel n={S()}>Print Sides</StepLabel>
                         <div className="space-y-2.5">
                           <RadioOpt name="flySides" value="single" checked={flyerSides === 'single'} onChange={() => setFlyerSides('single')} label="Single-sided" />
                           <RadioOpt name="flySides" value="double" checked={flyerSides === 'double'} onChange={() => setFlyerSides('double')} label="Double-sided" />
                         </div>
                       </div>
-                      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                      <div className="calc-glass-card rounded-2xl p-6">
                         <StepLabel n={S()}>Fold Style</StepLabel>
                         <div className="space-y-2.5">
                           <RadioOpt name="flyFold" value="none"    checked={flyerFold === 'none'}    onChange={() => setFlyerFold('none')}    label="No Fold" />
@@ -788,13 +952,13 @@ export default function Calculator() {
                 {/* FLYER A5 */}
                 {product === 'flyer_a5' && (
                   <>
-                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <div className="calc-glass-card rounded-2xl p-6">
                       <StepLabel n={S()}>Paper Stock</StepLabel>
                       <div className="flex flex-wrap gap-2">
                         {FLYER_PAPERS.map(p => <OptBtn key={p.id} active={flyerPaper === p.id} onClick={() => setFlyerPaper(p.id)}>{p.label}</OptBtn>)}
                       </div>
                     </div>
-                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <div className="calc-glass-card rounded-2xl p-6">
                       <StepLabel n={S()}>Print Sides</StepLabel>
                       <div className="flex gap-6">
                         <RadioOpt name="flySidesA5" value="single" checked={flyerSides === 'single'} onChange={() => setFlyerSides('single')} label="Single-sided" />
@@ -807,22 +971,22 @@ export default function Calculator() {
                 {/* BROCHURE A4 */}
                 {product === 'brochure_a4' && (
                   <>
-                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <div className="calc-glass-card rounded-2xl p-6">
                       <StepLabel n={S()}>Paper Stock</StepLabel>
                       <div className="flex flex-wrap gap-2">
                         {BROCHURE_PAPERS.map(p => <OptBtn key={p.id} active={flyerPaper === p.id} onClick={() => setFlyerPaper(p.id)}>{p.label}</OptBtn>)}
                       </div>
-                      <p className="text-xs text-gray-400 mt-2">Min 90 GSM for brochures.</p>
+                      <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.35)' }}>Min 90 GSM for brochures.</p>
                     </div>
                     <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                      <div className="calc-glass-card rounded-2xl p-6">
                         <StepLabel n={S()}>Print Sides</StepLabel>
                         <div className="space-y-2.5">
                           <RadioOpt name="broSides" value="single" checked={flyerSides === 'single'} onChange={() => setFlyerSides('single')} label="Single-sided" />
                           <RadioOpt name="broSides" value="double" checked={flyerSides === 'double'} onChange={() => setFlyerSides('double')} label="Double-sided" />
                         </div>
                       </div>
-                      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                      <div className="calc-glass-card rounded-2xl p-6">
                         <StepLabel n={S()}>Fold Style</StepLabel>
                         <div className="space-y-2.5">
                           <RadioOpt name="broFold" value="none"    checked={flyerFold === 'none'}    onChange={() => setFlyerFold('none')}    label="No Fold" />
@@ -836,39 +1000,39 @@ export default function Calculator() {
 
                 {/* COMPLIMENT SLIPS */}
                 {product === 'compliment_slip' && (
-                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                  <div className="calc-glass-card rounded-2xl p-6">
                     <StepLabel n={S()}>Print Sides</StepLabel>
                     <div className="flex gap-6">
                       <RadioOpt name="csSides" value="single" checked={csSides === 'single'} onChange={() => setCsSides('single')} label="Single-sided" />
                       <RadioOpt name="csSides" value="double" checked={csSides === 'double'} onChange={() => setCsSides('double')} label="Double-sided" />
                     </div>
-                    <p className="text-xs text-gray-400 mt-3">DL size (99×210mm) · 80 GSM offset · full CMYK</p>
+                    <p className="text-xs mt-3" style={{ color: 'rgba(255,255,255,0.35)' }}>DL size (99×210mm) · 80 GSM offset · full CMYK</p>
                   </div>
                 )}
 
                 {/* LETTERHEAD */}
                 {product === 'letterhead' && (
-                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                  <div className="calc-glass-card rounded-2xl p-6">
                     <StepLabel n={S()}>Paper Stock</StepLabel>
                     <div className="flex gap-2">
                       <OptBtn active={lhPaper === '80gsm'}  onClick={() => setLhPaper('80gsm')}>80 GSM Offset</OptBtn>
                       <OptBtn active={lhPaper === '100gsm'} onClick={() => setLhPaper('100gsm')}>100 GSM</OptBtn>
                     </div>
-                    <p className="text-xs text-gray-400 mt-2">Single-sided only. Full CMYK.</p>
+                    <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.35)' }}>Single-sided only. Full CMYK.</p>
                   </div>
                 )}
 
                 {/* NCR FORMS */}
                 {product === 'ncr_form' && (
                   <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <div className="calc-glass-card rounded-2xl p-6">
                       <StepLabel n={S()}>Size</StepLabel>
                       <div className="flex gap-2">
                         <OptBtn active={ncrSize === 'a5'} onClick={() => setNcrSize('a5')}>A5</OptBtn>
                         <OptBtn active={ncrSize === 'a4'} onClick={() => setNcrSize('a4')}>A4</OptBtn>
                       </div>
                     </div>
-                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <div className="calc-glass-card rounded-2xl p-6">
                       <StepLabel n={S()}>Parts</StepLabel>
                       <div className="flex gap-2">
                         <OptBtn active={ncrParts === '2'} onClick={() => setNcrParts('2')}>2-part</OptBtn>
@@ -880,27 +1044,27 @@ export default function Calculator() {
 
                 {/* CERTIFICATES */}
                 {product === 'certificate' && (
-                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                  <div className="calc-glass-card rounded-2xl p-6">
                     <StepLabel n={S()}>Border</StepLabel>
                     <div className="flex gap-2">
                       <OptBtn active={certBorder === 'none'} onClick={() => setCertBorder('none')}>No Border</OptBtn>
                       <OptBtn active={certBorder === 'gold'} onClick={() => setCertBorder('gold')}>Gold Border</OptBtn>
                     </div>
-                    <p className="text-xs text-gray-400 mt-2">A4 · 300 GSM · full colour · gold border printed (+PKR 5/cert)</p>
+                    <p className="text-xs mt-2" style={{ color: 'rgba(255,255,255,0.35)' }}>A4 · 300 GSM · full colour · gold border printed (+PKR 5/cert)</p>
                   </div>
                 )}
 
                 {/* ENVELOPES */}
                 {product === 'envelope' && (
                   <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <div className="calc-glass-card rounded-2xl p-6">
                       <StepLabel n={S()}>Size</StepLabel>
                       <div className="space-y-2.5">
                         <RadioOpt name="envSize" value="DL" checked={envSize === 'DL'} onChange={() => setEnvSize('DL')} label="DL (110×220mm)" note="standard letter" />
                         <RadioOpt name="envSize" value="C5" checked={envSize === 'C5'} onChange={() => setEnvSize('C5')} label="C5 (162×229mm)" note="half A4" />
                       </div>
                     </div>
-                    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                    <div className="calc-glass-card rounded-2xl p-6">
                       <StepLabel n={S()}>Print Sides</StepLabel>
                       <div className="space-y-2.5">
                         <RadioOpt name="envSides" value="single" checked={envSides === 'single'} onChange={() => setEnvSides('single')} label="Front only" note="logo & address" />
@@ -912,13 +1076,13 @@ export default function Calculator() {
 
                 {/* NOTEPAD */}
                 {product === 'notepad_a5' && (
-                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                  <div className="calc-glass-card rounded-2xl p-6">
                     <StepLabel n={S()}>Specifications</StepLabel>
                     <ul className="space-y-1 text-sm text-gray-600">
                       <li>• Paper: 70 GSM · Pages: 100 per pad</li>
                       <li>• Size: A5 · Rate: PKR 450 per pad</li>
                     </ul>
-                    <p className="text-xs text-gray-400 mt-3">Custom page counts, sizes or covers — request a quote on WhatsApp.</p>
+                    <p className="text-xs mt-3" style={{ color: 'rgba(255,255,255,0.35)' }}>Custom page counts, sizes or covers — request a quote on WhatsApp.</p>
                   </div>
                 )}
 
@@ -927,7 +1091,7 @@ export default function Calculator() {
               {/* Right: estimate panel */}
               <div className="lg:col-span-1">
                 <div className="bg-[#1A1A1A] text-white rounded-xl p-6 shadow-sm sticky top-24">
-                  <div className="text-[#CC0000] text-xs font-semibold uppercase tracking-wider mb-4">Your Estimate</div>
+                  <div className="text-[#7E0001] text-xs font-semibold uppercase tracking-wider mb-4">Your Estimate</div>
 
                   {estimate.isCustom ? (
                     <div className="mb-6">
@@ -940,7 +1104,7 @@ export default function Calculator() {
                       <div className="text-gray-400 text-sm mb-1">{ALL_PRODUCTS.find(p => p.id === product)?.label}</div>
                       <div className="text-4xl font-black text-white mb-1 tabular-nums">PKR {estimate.total.toLocaleString()}</div>
                       <div className="text-sm text-gray-400">≈ PKR {Number(estimate.perUnit).toFixed(2)} {estimate.unit}</div>
-                      {estimate.foldCharge > 0 && <div className="text-xs text-[#CC0000] mt-1">incl. PKR 500 fold surcharge</div>}
+                      {estimate.foldCharge > 0 && <div className="text-xs text-[#7E0001] mt-1">incl. PKR 500 fold surcharge</div>}
                     </div>
                   )}
 
@@ -994,7 +1158,8 @@ export default function Calculator() {
                   )}
 
                   <a href={waUrl} target="_blank" rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 bg-[#0E6655] hover:bg-[#0B5548] text-white font-bold px-4 py-3 rounded-lg transition-colors mb-3"
+                    className="w-full flex items-center justify-center gap-2 text-white font-bold px-4 py-3 rounded-xl transition-all hover:scale-[1.02] mb-3"
+                    style={{ background: '#25D366', boxShadow: '0 4px 20px rgba(37,211,102,0.30)' }}
                   >
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
@@ -1025,28 +1190,35 @@ export default function Calculator() {
           {/* ═══════════ BUNDLES TAB ═══════════ */}
           {tab === 'bundles' && (
             <div>
-              <p className="text-gray-500 text-sm mb-6 max-w-xl">
+              <p className="text-sm mb-6 max-w-xl" style={{ color: 'rgba(255,255,255,0.45)' }}>
                 Pre-packaged brand kits with everything you need in one order. Savings vs. individual pricing, confirmed on WhatsApp.
               </p>
               <div className="grid md:grid-cols-3 gap-5">
                 {BUNDLES.map(bundle => {
                   const bundleWaUrl = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(buildBundleWAMessage(bundle, negotiatorActive))}`
                   return (
-                    <div key={bundle.id} className={`bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col relative ${bundle.comingSoon ? 'opacity-70' : ''}`}>
-                      <div className="h-1.5" style={{ background: bundle.accent }} />
+                    <motion.div
+                      key={bundle.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5 }}
+                      className={`calc-glass-card rounded-2xl overflow-hidden flex flex-col relative ${bundle.comingSoon ? 'opacity-60' : ''}`}
+                    >
+                      <div className="h-1" style={{ background: `linear-gradient(90deg, ${bundle.accent}, transparent)` }} />
                       {bundle.comingSoon && (
-                        <div className="absolute top-3 right-3 bg-[#1A1A1A] text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Coming Soon</div>
+                        <div className="absolute top-3 right-3 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider" style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.18)' }}>Coming Soon</div>
                       )}
                       <div className="p-6 flex flex-col flex-1">
                         <div className="mb-1">
                           <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: bundle.accent }}>{bundle.savings}</span>
                         </div>
-                        <h3 className="text-xl font-black text-[#1A1A1A] mb-1">{bundle.name}</h3>
-                        <p className="text-sm text-gray-500 mb-3">{bundle.tagline}</p>
+                        <h3 className="text-xl font-black text-white mb-1">{bundle.name}</h3>
+                        <p className="text-sm mb-3" style={{ color: 'rgba(255,255,255,0.50)' }}>{bundle.tagline}</p>
                         {bundle.audiences && (
                           <div className="flex flex-wrap gap-1.5 mb-4">
                             {bundle.audiences.map(a => (
-                              <span key={a.label} className="inline-flex items-center gap-1 bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
+                              <span key={a.label} className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.55)', border: '1px solid rgba(255,255,255,0.10)' }}>
                                 <span>{a.icon}</span>{a.label}
                               </span>
                             ))}
@@ -1059,34 +1231,35 @@ export default function Calculator() {
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                               </svg>
                               <div>
-                                <span className="text-sm font-semibold text-[#1A1A1A]">{item.label}</span>
-                                <span className="text-xs text-gray-400 block">{item.detail}</span>
-                                {item.note && <span className="text-xs text-amber-500">* quoted separately</span>}
+                                <span className="text-sm font-semibold text-white">{item.label}</span>
+                                <span className="text-xs block" style={{ color: 'rgba(255,255,255,0.38)' }}>{item.detail}</span>
+                                {item.note && <span className="text-xs text-amber-400">* quoted separately</span>}
                               </div>
                             </li>
                           ))}
                         </ul>
                         {bundle.gifts && (
-                          <div className="bg-amber-50 border border-amber-100 rounded-lg px-3 py-2.5 mb-4">
-                            <p className="text-[10px] font-bold text-amber-600 uppercase tracking-wider mb-1.5">🎁 Complimentary Gift</p>
+                          <div className="rounded-lg px-3 py-2.5 mb-4" style={{ background: 'rgba(204,102,0,0.12)', border: '1px solid rgba(204,102,0,0.25)' }}>
+                            <p className="text-[10px] font-bold uppercase tracking-wider mb-1.5" style={{ color: '#CC6600' }}>🎁 Complimentary Gift</p>
                             {bundle.gifts.map((g, i) => (
-                              <p key={i} className="text-xs text-amber-800 leading-snug">{g}</p>
+                              <p key={i} className="text-xs leading-snug" style={{ color: 'rgba(255,255,255,0.55)' }}>{g}</p>
                             ))}
                           </div>
                         )}
-                        <div className="border-t border-gray-100 pt-4">
+                        <div className="pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
                           <div className="flex items-baseline justify-between mb-4">
-                            <span className="text-xs text-gray-400">Est. price</span>
-                            <span className="text-2xl font-black text-[#1A1A1A]">PKR {bundle.price.toLocaleString()}</span>
+                            <span className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>Est. price</span>
+                            <span className="text-2xl font-black text-white">PKR {bundle.price.toLocaleString()}</span>
                           </div>
                           {negotiatorActive && (
-                            <div className="bg-[#25D366]/10 border border-[#25D366]/30 rounded-lg px-3 py-1.5 mb-3 text-xs text-[#25D366] font-semibold">Negotiator Mode Active</div>
+                            <div className="rounded-lg px-3 py-1.5 mb-3 text-xs font-semibold" style={{ background: 'rgba(37,211,102,0.10)', border: '1px solid rgba(37,211,102,0.25)', color: '#25D366' }}>Negotiator Mode Active</div>
                           )}
                           <a
                             href={bundleWaUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full flex items-center justify-center gap-2 bg-[#0E6655] hover:bg-[#0B5548] text-white font-bold px-4 py-2.5 rounded-lg transition-colors text-sm"
+                            className="w-full flex items-center justify-center gap-2 text-white font-bold px-4 py-2.5 rounded-xl transition-all hover:scale-[1.02] text-sm"
+                            style={{ background: '#25D366', boxShadow: '0 4px 16px rgba(37,211,102,0.30)' }}
                           >
                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                               <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
@@ -1095,11 +1268,11 @@ export default function Calculator() {
                           </a>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   )
                 })}
               </div>
-              <p className="text-xs text-gray-400 mt-6 text-center">Bundle prices are estimates. Final pricing confirmed by our team on WhatsApp. Excludes delivery &amp; taxes.</p>
+              <p className="text-xs mt-6 text-center" style={{ color: 'rgba(255,255,255,0.28)' }}>Bundle prices are estimates. Final pricing confirmed by our team on WhatsApp. Excludes delivery &amp; taxes.</p>
             </div>
           )}
 
@@ -1107,7 +1280,7 @@ export default function Calculator() {
       </section>
 
       {/* ── Negotiator bot (fixed) ── */}
-      <NegotiatorBot active={negotiatorActive} onClick={() => setNegotiatorActive(true)} />
+      <PriceTag active={negotiatorActive} onClick={() => setNegotiatorActive(true)} />
 
       {/* ── Price volatility notification ── */}
       <AnimatePresence>

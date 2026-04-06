@@ -8,14 +8,16 @@ function whatsappUrl(productName) {
   return WA_BASE + encodeURIComponent(`Hi, I'd like a quote for ${productName}.`)
 }
 
-/* Per-category accent colour — used on card top-border and icon tint */
+const ease = [0.22, 1, 0.36, 1]
+
+/* Category accent colors — mapped to navy palette */
 const categoryColor = {
-  stationery: '#1A3A6B',
-  marketing:  '#0D6B6B',
-  packaging:  '#5B2C8D',
-  school:     '#1A6B3C',
-  event:      '#CC6600',
-  bulk:       '#2A2A2A',
+  stationery: '#4B7FCC',
+  marketing:  '#4BACC6',
+  packaging:  '#9B6ED4',
+  school:     '#4BAF7C',
+  event:      '#D4924B',
+  bulk:       '#8899AA',
 }
 
 function WhatsAppIcon({ className = 'w-4 h-4' }) {
@@ -26,82 +28,108 @@ function WhatsAppIcon({ className = 'w-4 h-4' }) {
   )
 }
 
-function ArrowRight({ className = 'w-3.5 h-3.5' }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-    </svg>
-  )
-}
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 16 },
-  show:   { opacity: 1, y: 0,  transition: { duration: 0.22, ease: 'easeOut' } },
-  exit:   { opacity: 0, y: -8, transition: { duration: 0.15 } },
-}
-
-function ServiceCard({ service }) {
-  const accent = categoryColor[service.category] ?? '#CC0000'
-  const iconBg  = accent + '15'   /* 8% opacity tint */
+/* ── Single catalog row ── */
+function ServiceRow({ service, index }) {
+  const accent = categoryColor[service.category] ?? '#4B7FCC'
 
   return (
     <motion.div
-      layout
-      variants={cardVariants}
-      initial="hidden"
-      animate="show"
-      exit="exit"
-      className="bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-gray-200 hover:shadow-md transition-all duration-200 flex flex-col group"
+      initial={{ opacity: 0, x: -12 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.35, delay: Math.min(index * 0.03, 0.25), ease }}
+      className="group relative flex items-center gap-4 sm:gap-6 py-4 px-4 sm:px-6 transition-all duration-200"
+      style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
     >
-      {/* category accent line */}
-      <div className="h-[3px] w-full flex-shrink-0" style={{ backgroundColor: accent }} />
+      {/* Maroon left border on hover */}
+      <div
+        className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        style={{ background: '#7E0001' }}
+      />
 
-      <div className="p-5 flex flex-col flex-1">
-        {/* icon + name */}
-        <div className="flex items-start gap-3 mb-3">
-          <div
-            className="w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0"
-            style={{ backgroundColor: iconBg }}
-          >
-            {service.icon}
-          </div>
-          <h3 className="text-[15px] font-bold text-[#1A1A1A] leading-snug pt-1.5 group-hover:text-[#1A1A1A]">
-            {service.name}
-          </h3>
-        </div>
+      {/* Index number */}
+      <span
+        className="flex-shrink-0 text-[11px] font-bold tabular-nums w-6 text-right"
+        style={{ color: 'rgba(255,255,255,0.18)' }}
+      >
+        {String(index + 1).padStart(2, '0')}
+      </span>
 
-        {/* description */}
-        <p className="text-sm text-gray-500 leading-relaxed mb-4 flex-1">
+      {/* Icon */}
+      <span
+        className="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-lg"
+        style={{ background: accent + '18', border: `1px solid ${accent}28` }}
+      >
+        {service.icon}
+      </span>
+
+      {/* Name + description */}
+      <div className="flex-1 min-w-0">
+        <p className="text-[15px] font-semibold text-white/90 group-hover:text-white transition-colors leading-snug">
+          {service.name}
+        </p>
+        <p className="text-[12px] text-white/35 mt-0.5 leading-snug line-clamp-1 hidden sm:block">
           {service.shortDesc}
         </p>
-
-        {/* spec chips */}
-        <div className="flex flex-wrap gap-1.5 mb-4">
-          {service.specs.map((spec) => (
-            <span
-              key={spec}
-              className="text-[11px] bg-gray-50 border border-gray-200 text-gray-500 px-2 py-0.5 rounded-md leading-5"
-            >
-              {spec}
-            </span>
-          ))}
-        </div>
-
-        {/* WhatsApp CTA — green, compact */}
-        <div className="border-t border-gray-100 pt-3 mt-auto">
-          <a
-            href={whatsappUrl(service.name)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-[#1FAD5B] hover:text-[#178046] font-semibold text-[13px] transition-colors group/cta"
-          >
-            <WhatsAppIcon className="w-4 h-4" />
-            Get a Quote
-            <ArrowRight className="w-3 h-3 opacity-60 group-hover/cta:translate-x-0.5 transition-transform" />
-          </a>
-        </div>
       </div>
+
+      {/* Spec chips — hidden on small screens */}
+      <div className="hidden lg:flex flex-wrap gap-1.5 max-w-[240px] flex-shrink-0">
+        {service.specs.slice(0, 3).map((spec) => (
+          <span
+            key={spec}
+            className="text-[10px] px-2 py-0.5 rounded"
+            style={{
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.07)',
+              color: 'rgba(255,255,255,0.38)',
+            }}
+          >
+            {spec}
+          </span>
+        ))}
+      </div>
+
+      {/* WhatsApp CTA */}
+      <a
+        href={whatsappUrl(service.name)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex-shrink-0 flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg transition-all duration-200 opacity-0 group-hover:opacity-100"
+        style={{
+          background: 'rgba(37,211,102,0.10)',
+          border: '1px solid rgba(37,211,102,0.22)',
+          color: '#25D366',
+        }}
+      >
+        <WhatsAppIcon />
+        <span className="hidden sm:inline">Quote</span>
+      </a>
     </motion.div>
+  )
+}
+
+/* ── Category section header ── */
+function CategoryHeader({ label, accent, count }) {
+  return (
+    <div
+      className="flex items-center gap-4 py-5 px-4 sm:px-6 mt-8 first:mt-0"
+      style={{ borderBottom: `1px solid ${accent}30` }}
+    >
+      <div className="h-px flex-1" style={{ background: `linear-gradient(90deg, ${accent}50, transparent)` }} />
+      <span
+        className="text-[11px] font-black uppercase tracking-[0.25em] px-3 py-1 rounded-full"
+        style={{
+          background: accent + '15',
+          border: `1px solid ${accent}35`,
+          color: accent,
+        }}
+      >
+        {label}
+      </span>
+      <span className="text-[11px] text-white/20">{count}</span>
+      <div className="h-px flex-1" style={{ background: `linear-gradient(90deg, transparent, ${accent}20)` }} />
+    </div>
   )
 }
 
@@ -112,43 +140,71 @@ export default function Services() {
     ? services
     : services.filter((s) => s.category === active)
 
-  const activeLabel = categories.find((c) => c.id === active)?.label ?? 'All Services'
+  /* Group by category when showing all */
+  const grouped = active === 'all'
+    ? categories
+        .filter((c) => c.id !== 'all')
+        .map((cat) => ({
+          ...cat,
+          items: services.filter((s) => s.category === cat.id),
+        }))
+        .filter((g) => g.items.length > 0)
+    : null
 
   return (
-    <div className="pt-16 min-h-screen bg-[#F5F0EB]">
+    <div className="pt-16 min-h-screen" style={{ background: '#0E182A' }}>
 
       {/* ── Hero ──────────────────────────────────────────────── */}
-      <section className="bg-[#1A1A1A] text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative text-white py-20 overflow-hidden" style={{ background: '#0E182A' }}>
+        <motion.div
+          className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(126,0,1,0.12) 0%, transparent 65%)' }}
+          animate={{ scale: [1, 1.1, 1], opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <div className="absolute inset-0 pointer-events-none" style={{
+          backgroundImage: 'repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(255,255,255,0.012) 60px,rgba(255,255,255,0.012) 61px),repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(255,255,255,0.012) 60px,rgba(255,255,255,0.012) 61px)',
+        }} />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.65, ease }}
           >
-            <div className="text-[#CC0000] text-sm font-semibold uppercase tracking-widest mb-2">
-              What We Print
-            </div>
-            <h1 className="text-4xl md:text-5xl font-black mb-3">Our Services</h1>
-            <p className="text-gray-400 max-w-xl text-lg leading-relaxed">
-              37 print products across 6 categories — everything your business needs, under one roof.
+            <p className="text-[#7E0001] text-[11px] font-bold uppercase tracking-[0.22em] mb-3">What We Print</p>
+            <h1 className="text-[2.2rem] md:text-[3.2rem] font-bold leading-tight tracking-tight mb-5 text-white">
+              Our Services
+            </h1>
+            <p className="text-white/45 max-w-xl text-lg leading-relaxed">
+              37 print products across 6 categories — everything your business needs, under one roof in S.I.T.E Karachi.
             </p>
           </motion.div>
         </div>
+
+        {/* Section divider */}
+        <div className="absolute inset-x-0 bottom-0 h-px" style={{
+          background: 'linear-gradient(90deg, transparent, rgba(126,0,1,0.4) 30%, rgba(126,0,1,0.4) 70%, transparent)',
+        }} />
       </section>
 
       {/* ── Category Filter Tabs ──────────────────────────────── */}
-      <div className="sticky top-16 z-30 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+      <div className="sticky top-16 z-30" style={{
+        background: 'rgba(14,24,42,0.94)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+      }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex gap-1.5 py-3 overflow-x-auto scrollbar-hide">
+          <div className="flex gap-2 py-3 overflow-x-auto scrollbar-hide">
             {categories.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActive(cat.id)}
-                className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  active === cat.id
-                    ? 'bg-[#1A1A1A] text-white shadow-sm'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
+                className="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all duration-200"
+                style={active === cat.id
+                  ? { background: 'rgba(126,0,1,0.25)', color: '#fff', border: '1px solid rgba(126,0,1,0.5)' }
+                  : { background: 'transparent', color: 'rgba(255,255,255,0.45)', border: '1px solid rgba(255,255,255,0.08)' }
+                }
               >
                 {cat.label}
               </button>
@@ -157,30 +213,109 @@ export default function Services() {
         </div>
       </div>
 
-      {/* ── Card Grid ─────────────────────────────────────────── */}
-      <section className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* ── Catalog List ──────────────────────────────────────── */}
+      <section className="py-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          {/* count line */}
           <motion.p
             key={active}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-sm text-gray-400 mb-6"
+            className="text-sm text-white/25 mb-6 px-4 sm:px-6"
           >
-            {filtered.length} product{filtered.length !== 1 ? 's' : ''} in{' '}
-            <span className="font-medium text-[#1A1A1A]">{activeLabel}</span>
+            {filtered.length} services
           </motion.p>
 
-          <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            <AnimatePresence mode="popLayout">
-              {filtered.map((service) => (
-                <ServiceCard key={service.id} service={service} />
-              ))}
+          <div
+            className="rounded-2xl overflow-hidden"
+            style={{
+              background: 'rgba(22,32,53,0.6)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(255,255,255,0.06)',
+              boxShadow: '0 8px 48px rgba(0,0,0,0.3)',
+            }}
+          >
+            <AnimatePresence mode="wait">
+              {grouped ? (
+                /* ── Grouped by category (all tab) ── */
+                <motion.div
+                  key="grouped"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {grouped.map((group) => {
+                    const accent = categoryColor[group.id] ?? '#4B7FCC'
+                    let rowOffset = 0
+                    grouped.slice(0, grouped.indexOf(group)).forEach(g => { rowOffset += g.items.length })
+                    return (
+                      <div key={group.id}>
+                        <CategoryHeader label={group.label} accent={accent} count={group.items.length} />
+                        {group.items.map((service, i) => (
+                          <ServiceRow key={service.id} service={service} index={rowOffset + i} />
+                        ))}
+                      </div>
+                    )
+                  })}
+                </motion.div>
+              ) : (
+                /* ── Flat filtered list ── */
+                <motion.div
+                  key={active}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {filtered.map((service, i) => (
+                    <ServiceRow key={service.id} service={service} index={i} />
+                  ))}
+                </motion.div>
+              )}
             </AnimatePresence>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Bottom CTA ────────────────────────────────────────── */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0" style={{
+          background: 'radial-gradient(ellipse at 50% 100%, rgba(126,0,1,0.08) 0%, transparent 60%)',
+        }} />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease }}
+          >
+            <p className="text-[#7E0001] text-[11px] font-bold uppercase tracking-[0.22em] mb-3">Can't Find What You Need?</p>
+            <h2 className="text-2xl md:text-3xl font-semibold text-white mb-4 tracking-tight">
+              We Print Almost Anything
+            </h2>
+            <p className="text-white/40 mb-8 max-w-md mx-auto text-[15px] leading-relaxed">
+              Don't see your product above? WhatsApp us your specs — we handle custom jobs daily.
+            </p>
+            <a
+              href={`https://wa.me/923343219844?text=${encodeURIComponent("Hi, I need a custom print quote — not in your listed products.")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 font-bold px-8 py-4 rounded-xl transition-all duration-200 hover:scale-[1.03]"
+              style={{
+                background: 'rgba(37,211,102,0.10)',
+                border: '1px solid rgba(37,211,102,0.25)',
+                color: '#25D366',
+                boxShadow: '0 4px 24px rgba(37,211,102,0.12)',
+              }}
+            >
+              <WhatsAppIcon className="w-5 h-5" />
+              Ask About Custom Jobs
+            </a>
           </motion.div>
         </div>
       </section>
+
     </div>
   )
 }

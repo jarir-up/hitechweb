@@ -1,14 +1,80 @@
 @import "tailwindcss";
 
-@theme {
-  --color-brand-red: #CC0000;
-  --color-brand-dark: #1A1A1A;
-  --color-brand-cream: #F5F0EB;
-  --color-brand-red-dark: #A30000;
-  --color-brand-red-light: #E60000;
+/* ── Nacelle font-face declarations ───────────────────────── */
+@font-face {
+  font-family: 'Nacelle';
+  src: url('/fonts/nacelle/Nacelle-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nacelle';
+  src: url('/fonts/nacelle/Nacelle-LightItalic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nacelle';
+  src: url('/fonts/nacelle/Nacelle-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nacelle';
+  src: url('/fonts/nacelle/Nacelle-Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nacelle';
+  src: url('/fonts/nacelle/Nacelle-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nacelle';
+  src: url('/fonts/nacelle/Nacelle-SemiBoldItalic.otf') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nacelle';
+  src: url('/fonts/nacelle/Nacelle-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Nacelle';
+  src: url('/fonts/nacelle/Nacelle-BoldItalic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
 
-  --font-family-sans: 'Inter', 'Segoe UI', system-ui, sans-serif;
-  --font-family-heading: 'Montserrat', 'Inter', system-ui, sans-serif;
+@theme {
+  /* 60-30-10 color system */
+  --color-navy-deep:   #0E182A;
+  --color-navy-mid:    #162035;
+  --color-navy-light:  #1E2D47;
+  --color-maroon:      #7E0001;
+  --color-maroon-glow: rgba(126,0,1,0.35);
+
+  /* Legacy aliases */
+  --color-brand-red:   #7E0001;
+  --color-brand-dark:  #0E182A;
+  --color-brand-cream: #0E182A;
+
+  /* Unified font — Nacelle */
+  --font-family-sans:    'Nacelle', system-ui, sans-serif;
+  --font-family-heading: 'Nacelle', system-ui, sans-serif;
+  --font-family-display: 'Nacelle', system-ui, sans-serif;
 }
 
 html {
@@ -16,11 +82,29 @@ html {
 }
 
 body {
-  background-color: var(--color-brand-cream);
-  color: var(--color-brand-dark);
-  font-family: var(--font-family-sans);
+  background-color: #0E182A;
+  color: #E8EAF0;
+  font-family: 'Nacelle', system-ui, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-family-heading);
+  font-family: 'Nacelle', system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* Global glass utility */
+.glass {
+  background: rgba(22, 32, 53, 0.7);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+/* Maroon accent glow */
+.glow-maroon {
+  box-shadow: 0 0 20px rgba(126,0,1,0.4), 0 0 60px rgba(126,0,1,0.15);
 }

@@ -28,7 +28,15 @@
       "Bash(host -t NS hitechprinters.com.pk)",
       "Bash(sed -i 's/bg-\\\\[#25D366\\\\] hover:bg-\\\\[#1ebe5d\\\\]/bg-[#0E6655] hover:bg-[#0B5548]/g; s/bg-\\\\[#25D366\\\\] hover:bg-\\\\[#1EB854\\\\]/bg-[#0E6655] hover:bg-[#0B5548]/g' /home/jderyl/Work/Hitech/hitech-printers/src/pages/Contact.jsx /home/jderyl/Work/Hitech/hitech-printers/src/pages/Portfolio.jsx)",
       "Bash(sed -i 's/bg-\\\\[#25D366\\\\]/bg-[#0E6655]/g' /home/jderyl/Work/Hitech/hitech-printers/src/components/WhatsAppButton.jsx)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(npm i:*)",
+      "Bash(npx skills:*)",
+      "Bash(pkill -f \"vite --port\")",
+      "Bash(npx claude-mem:*)",
+      "Bash(npx create-video@latest)",
+      "Bash(wait)",
+      "Bash(npm show:*)",
+      "Bash(sed:*)"
     ]
   }
 }

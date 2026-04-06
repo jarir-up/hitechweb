@@ -61,7 +61,7 @@ export default function Navbar() {
               alt="Hi-Tech Printers"
               className="h-9 w-auto object-contain transition-opacity duration-200 group-hover:opacity-85"
             />
-            <span className="text-white font-bold text-[15px] tracking-tight hidden sm:block transition-colors duration-200 group-hover:text-[#CC0000]">
+            <span className="text-white font-bold text-[15px] tracking-tight hidden sm:block transition-colors duration-200 group-hover:text-[#7E0001]">
               Hi-Tech Printers
             </span>
           </Link>
@@ -77,14 +77,14 @@ export default function Navbar() {
               >
                 {({ isActive }) => (
                   <>
-                    <span className={isActive ? 'text-[#CC0000]' : 'text-white/75 group-hover:text-white'}>
+                    <span className={isActive ? 'text-[#7E0001]' : 'text-white/75 group-hover:text-white'}>
                       {label}
                     </span>
                     {/* active indicator dot */}
                     {isActive && (
                       <motion.span
                         layoutId="nav-active-dot"
-                        className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#CC0000]"
+                        className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#7E0001]"
                         transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                       />
                     )}
@@ -162,7 +162,7 @@ export default function Navbar() {
                   className={({ isActive }) =>
                     `flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all duration-150 ${
                       isActive
-                        ? 'text-[#CC0000] bg-white/[0.06]'
+                        ? 'text-[#7E0001] bg-white/[0.06]'
                         : 'text-white/70 hover:text-white hover:bg-white/[0.05]'
                     }`
                   }
@@ -171,7 +171,7 @@ export default function Navbar() {
                     <>
                       <span>{label}</span>
                       {isActive && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#CC0000]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#7E0001]" />
                       )}
                     </>
                   )}

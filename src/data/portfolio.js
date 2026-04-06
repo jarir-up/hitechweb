@@ -15,7 +15,7 @@ export const sectorColors = {
   pharma:    { bg: '#0D7377', light: '#EEF7F7' },
   textile:   { bg: '#5B2C8D', light: '#F3EEF9' },
   events:    { bg: '#CC6600', light: '#FBF3E8' },
-  retail:    { bg: '#CC0000', light: '#FAEAEA' },
+  retail:    { bg: '#7E0001', light: '#FAEAEA' },
 }
 
 export const portfolioItems = [

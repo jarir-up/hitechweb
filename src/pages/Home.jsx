@@ -46,7 +46,7 @@ const stats = [
     suffix: '+',
     label: 'Years in Business',
     sub: 'Serving Karachi since 2005',
-    color: '#CC0000',
+    color: '#7E0001',
     icon: (
       <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.7} viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -222,7 +222,7 @@ function Counter({ to, suffix = '', duration = 1.8 }) {
 /* ── Section label component ────────────────────────────────── */
 function SectionLabel({ children }) {
   return (
-    <p className="text-[#CC0000] text-[11px] font-bold uppercase tracking-[0.22em] mb-3">
+    <p className="text-[#7E0001] text-[11px] font-bold uppercase tracking-[0.22em] mb-3">
       {children}
     </p>
   )
@@ -234,7 +234,7 @@ export default function Home() {
     <div className="pt-16">
 
       {/* ══ 1. HERO ══════════════════════════════════════════ */}
-      <section className="relative bg-[#0D0D0D] text-white overflow-hidden min-h-[100svh] flex flex-col justify-center">
+      <section className="relative bg-[#0E182A] text-white overflow-hidden min-h-[100svh] flex flex-col justify-center">
 
         {/* Background photo */}
         <div className="absolute inset-0">
@@ -246,10 +246,10 @@ export default function Home() {
             loading="eager"
           />
           <div className="absolute inset-0" style={{
-            background: 'linear-gradient(110deg, rgba(13,13,13,0.98) 0%, rgba(13,13,13,0.8) 48%, rgba(13,13,13,0.2) 100%)',
+            background: 'linear-gradient(110deg, rgba(14,24,42,0.98) 0%, rgba(14,24,42,0.8) 48%, rgba(14,24,42,0.2) 100%)',
           }} />
           <div className="absolute inset-x-0 bottom-0 h-40" style={{
-            background: 'linear-gradient(to top, #111111, transparent)',
+            background: 'linear-gradient(to top, #0E182A, transparent)',
           }} />
         </div>
 
@@ -263,7 +263,7 @@ export default function Home() {
           }} />
           <motion.div
             className="absolute -top-40 -right-20 w-[700px] h-[700px] rounded-full"
-            style={{ background: 'radial-gradient(circle,rgba(204,0,0,0.16) 0%,transparent 65%)' }}
+            style={{ background: 'radial-gradient(circle,rgba(126,0,1,0.16) 0%,transparent 65%)' }}
             animate={{ scale: [1, 1.1, 1], opacity: [0.7, 1, 0.7] }}
             transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
           />
@@ -276,7 +276,7 @@ export default function Home() {
           <motion.div
             className="absolute inset-0"
             style={{
-              backgroundImage: 'repeating-linear-gradient(45deg,transparent,transparent 80px,rgba(204,0,0,0.03) 80px,rgba(204,0,0,0.03) 81px)',
+              backgroundImage: 'repeating-linear-gradient(45deg,transparent,transparent 80px,rgba(126,0,1,0.03) 80px,rgba(126,0,1,0.03) 81px)',
             }}
             animate={{ backgroundPositionX: ['0px', '160px'] }}
             transition={{ duration: 26, repeat: Infinity, ease: 'linear' }}
@@ -294,10 +294,10 @@ export default function Home() {
                 variants={fadeUp}
                 className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full mb-7 text-[#FF5555]"
                 style={{
-                  background: 'rgba(204,0,0,0.13)',
+                  background: 'rgba(126,0,1,0.13)',
                   backdropFilter: 'blur(12px)',
                   WebkitBackdropFilter: 'blur(12px)',
-                  border: '1px solid rgba(204,0,0,0.28)',
+                  border: '1px solid rgba(126,0,1,0.28)',
                 }}
               >
                 <span className="w-1.5 h-1.5 bg-[#FF5555] rounded-full animate-pulse" />
@@ -306,13 +306,13 @@ export default function Home() {
 
               <motion.h1
                 variants={fadeUp}
-                className="text-6xl sm:text-7xl md:text-[5.5rem] font-black leading-[0.9] tracking-tighter mb-7"
+                className="text-[2.4rem] sm:text-[3rem] md:text-[3.6rem] font-semibold leading-tight tracking-tight mb-7"
               >
                 Karachi's
                 <br />
                 <span
-                  className="text-[#CC0000]"
-                  style={{ textShadow: '0 0 80px rgba(204,0,0,0.35)' }}
+                  className="text-[#7E0001]"
+                  style={{ textShadow: '0 0 80px rgba(126,0,1,0.35)' }}
                 >
                   Precision
                 </span>
@@ -436,7 +436,7 @@ export default function Home() {
       </section>
 
       {/* ══ 2. STATS BAND ════════════════════════════════════ */}
-      <section className="py-16 bg-[#111111]">
+      <section className="py-16" style={{ background: '#0B1220' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             variants={stagger}
@@ -492,7 +492,7 @@ export default function Home() {
       </section>
 
       {/* ══ 3. SERVICES PREVIEW ══════════════════════════════ */}
-      <section className="py-24 bg-[#F5F0EB]">
+      <section className="py-24" style={{ background: '#0E182A' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="text-center mb-14"
@@ -502,10 +502,10 @@ export default function Home() {
             viewport={{ once: true, amount: 0.4 }}
           >
             <SectionLabel>What We Do</SectionLabel>
-            <h2 className="text-3xl md:text-5xl font-black text-[#1A1A1A] mb-4 tracking-tight">
+            <h2 className="text-2xl md:text-3xl font-semibold text-white mb-4 tracking-tight">
               What We Print
             </h2>
-            <p className="text-gray-500 max-w-lg mx-auto text-[15px] leading-relaxed">
+            <p className="text-white/45 max-w-lg mx-auto text-[15px] leading-relaxed">
               Six specialised categories, one trusted press, all under one roof in SITE, Karachi.
             </p>
           </motion.div>
@@ -521,18 +521,16 @@ export default function Home() {
               <motion.div
                 key={cat.id}
                 variants={fadeUp}
-                className="bg-white rounded-2xl overflow-hidden flex flex-col group"
+                className="rounded-2xl overflow-hidden flex flex-col group"
                 style={{
-                  border: '1px solid rgba(0,0,0,0.06)',
-                  boxShadow: '0 2px 16px rgba(0,0,0,0.05)',
-                  transformStyle: 'preserve-3d',
-                  perspective: '700px',
+                  background: 'rgba(22,32,53,0.7)',
+                  backdropFilter: 'blur(18px)',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
                 }}
                 whileHover={{
-                  y: -8,
-                  rotateX: -2,
-                  rotateY: 3,
-                  boxShadow: `0 28px 56px rgba(0,0,0,0.14), 0 0 0 1px ${cat.accent}50`,
+                  y: -6,
+                  boxShadow: `0 24px 48px rgba(0,0,0,0.5), 0 0 0 1px ${cat.accent}55`,
                   transition: { type: 'spring', stiffness: 260, damping: 22 },
                 }}
               >
@@ -555,9 +553,9 @@ export default function Home() {
                 </div>
 
                 <div className="p-6 flex flex-col flex-1">
-                  <h3 className="text-[15px] font-bold text-[#1A1A1A] mb-2">{cat.name}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed flex-1 mb-4">{cat.description}</p>
-                  <div className="border-t border-gray-100 pt-3 mt-auto">
+                  <h3 className="text-[15px] font-bold text-white mb-2">{cat.name}</h3>
+                  <p className="text-sm text-white/45 leading-relaxed flex-1 mb-4">{cat.description}</p>
+                  <div className="border-t pt-3 mt-auto" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
                     <Link
                       to={cat.href}
                       className="inline-flex items-center gap-1.5 text-[13px] font-semibold transition-all duration-200 group-hover:gap-3"
@@ -580,7 +578,8 @@ export default function Home() {
           >
             <Link
               to="/services"
-              className="inline-flex items-center gap-2 border-2 border-[#1A1A1A] text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white font-semibold px-8 py-3.5 rounded-xl transition-all duration-200"
+              className="inline-flex items-center gap-2 font-semibold px-8 py-3.5 rounded-xl transition-all duration-200 hover:scale-[1.02]"
+              style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.85)' }}
             >
               See All 37 Services
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -592,7 +591,7 @@ export default function Home() {
       </section>
 
       {/* ══ 4. PORTFOLIO STRIP ═══════════════════════════════ */}
-      <section className="py-24 bg-[#0F0F0F]">
+      <section className="py-24" style={{ background: '#0E182A' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12"
@@ -603,10 +602,10 @@ export default function Home() {
           >
             <div>
               <SectionLabel>Our Work</SectionLabel>
-              <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight">
+              <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight">
                 Work That Speaks
                 <br />
-                <span className="text-[#CC0000]">For Itself</span>
+                <span className="text-[#7E0001]">For Itself</span>
               </h2>
             </div>
             <Link
@@ -694,7 +693,7 @@ export default function Home() {
       </section>
 
       {/* ══ 5. WHY HI-TECH ═══════════════════════════════════ */}
-      <section className="py-24 bg-[#0D0D0D]">
+      <section className="py-24 bg-[#0E182A]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             className="text-center mb-16"
@@ -704,7 +703,7 @@ export default function Home() {
             viewport={{ once: true, amount: 0.4 }}
           >
             <SectionLabel>Our Edge</SectionLabel>
-            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
+            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight mb-4">
               Why Choose Hi-Tech?
             </h2>
             <p className="text-white/40 max-w-lg mx-auto text-[15px]">
@@ -727,11 +726,11 @@ export default function Home() {
                 style={{
                   background: 'rgba(255,255,255,0.03)',
                   border: '1px solid rgba(255,255,255,0.07)',
-                  borderTop: '3px solid #CC0000',
+                  borderTop: '3px solid #7E0001',
                 }}
                 whileHover={{
                   background: 'rgba(255,255,255,0.06)',
-                  boxShadow: '0 12px 48px rgba(204,0,0,0.18)',
+                  boxShadow: '0 12px 48px rgba(126,0,1,0.18)',
                   transition: { duration: 0.25 },
                 }}
               >
@@ -756,9 +755,9 @@ export default function Home() {
                 </span>
 
                 <motion.div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center text-[#CC0000] mb-6"
-                  style={{ background: 'rgba(204,0,0,0.1)', border: '1px solid rgba(204,0,0,0.18)' }}
-                  animate={{ boxShadow: ['0 0 0px rgba(204,0,0,0)', '0 0 20px rgba(204,0,0,0.4)', '0 0 0px rgba(204,0,0,0)'] }}
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center text-[#7E0001] mb-6"
+                  style={{ background: 'rgba(126,0,1,0.1)', border: '1px solid rgba(126,0,1,0.18)' }}
+                  animate={{ boxShadow: ['0 0 0px rgba(126,0,1,0)', '0 0 20px rgba(126,0,1,0.4)', '0 0 0px rgba(126,0,1,0)'] }}
                   transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: i * 1.1 }}
                 >
                   {item.icon}
@@ -790,7 +789,7 @@ export default function Home() {
 
         {/* Red radial glow */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: 'radial-gradient(ellipse at 50% 50%, rgba(204,0,0,0.14) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(126,0,1,0.14) 0%, transparent 70%)',
         }} />
 
         {/* Subtle grid */}
@@ -812,11 +811,11 @@ export default function Home() {
             </motion.div>
             <motion.h2
               variants={fadeUp}
-              className="text-4xl md:text-6xl font-black mb-5 tracking-tight"
+              className="text-2xl md:text-[2.8rem] font-semibold mb-5 tracking-tight"
             >
               Ready to Print
               <br />
-              <span className="text-[#CC0000]">Something Great?</span>
+              <span className="text-[#7E0001]">Something Great?</span>
             </motion.h2>
             <motion.p
               variants={fadeUp}

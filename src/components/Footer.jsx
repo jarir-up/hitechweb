@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 const WHATSAPP_URL = `https://wa.me/923343219844?text=Hello%2C%20I'd%20like%20to%20get%20a%20quote%20from%20Hi-Tech%20Printers.`
 
 const serviceLinks = [
-  { label: 'Sticker Sheets',          to: '/services', color: '#CC0000' },
+  { label: 'Sticker Sheets',          to: '/services', color: '#7E0001' },
   { label: 'Business Cards',          to: '/services', color: '#1A3A6B' },
   { label: 'Brochures & Flyers',      to: '/services', color: '#0D6B6B' },
   { label: 'Letterheads & Notepads',  to: '/services', color: '#1A6B3C' },
@@ -35,7 +35,7 @@ export default function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer style={{ background: '#0A0A0A', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+    <footer style={{ background: '#0B1220', borderTop: '1px solid rgba(126,0,1,0.15)' }}>
 
       {/* Main grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -49,7 +49,7 @@ export default function Footer() {
                 alt="Hi-Tech Printers"
                 className="h-9 w-auto object-contain opacity-90 group-hover:opacity-100 transition-opacity"
               />
-              <span className="text-white font-bold text-[15px] tracking-tight group-hover:text-[#CC0000] transition-colors">
+              <span className="text-white font-bold text-[15px] tracking-tight group-hover:text-[#7E0001] transition-colors">
                 Hi-Tech Printers
               </span>
             </Link>
@@ -76,7 +76,7 @@ export default function Footer() {
 
             {/* Hours */}
             <div className="mt-5 flex items-center gap-2 text-xs text-white/30">
-              <svg className="w-3.5 h-3.5 text-[#CC0000] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5 text-[#7E0001] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Mon – Sat &nbsp;·&nbsp; 9:00 AM – 7:00 PM
@@ -86,7 +86,7 @@ export default function Footer() {
           {/* ── Services column */}
           <div>
             <h3 className="text-white font-semibold text-xs uppercase tracking-[0.18em] mb-5 flex items-center gap-2">
-              <span className="w-3 h-[2px] bg-[#CC0000] rounded-full" />
+              <span className="w-3 h-[2px] bg-[#7E0001] rounded-full" />
               Services
             </h3>
             <ul className="space-y-2.5">
@@ -110,7 +110,7 @@ export default function Footer() {
           {/* ── Quick links column */}
           <div>
             <h3 className="text-white font-semibold text-xs uppercase tracking-[0.18em] mb-5 flex items-center gap-2">
-              <span className="w-3 h-[2px] bg-[#CC0000] rounded-full" />
+              <span className="w-3 h-[2px] bg-[#7E0001] rounded-full" />
               Navigate
             </h3>
             <ul className="space-y-2.5">
@@ -130,7 +130,7 @@ export default function Footer() {
           {/* ── Contact column */}
           <div>
             <h3 className="text-white font-semibold text-xs uppercase tracking-[0.18em] mb-5 flex items-center gap-2">
-              <span className="w-3 h-[2px] bg-[#CC0000] rounded-full" />
+              <span className="w-3 h-[2px] bg-[#7E0001] rounded-full" />
               Contact
             </h3>
             <ul className="space-y-4 text-sm">
@@ -141,7 +141,7 @@ export default function Footer() {
                 >
                   <span className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
                     style={{ background: 'rgba(204,0,0,0.1)', border: '1px solid rgba(204,0,0,0.18)' }}>
-                    <svg className="w-3.5 h-3.5 text-[#CC0000]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3.5 h-3.5 text-[#7E0001]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
                   </span>
@@ -155,7 +155,7 @@ export default function Footer() {
                 >
                   <span className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
                     style={{ background: 'rgba(204,0,0,0.1)', border: '1px solid rgba(204,0,0,0.18)' }}>
-                    <svg className="w-3.5 h-3.5 text-[#CC0000]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3.5 h-3.5 text-[#7E0001]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </span>
@@ -165,7 +165,7 @@ export default function Footer() {
               <li className="flex items-start gap-3 text-white/40">
                 <span className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
                   style={{ background: 'rgba(204,0,0,0.1)', border: '1px solid rgba(204,0,0,0.18)' }}>
-                  <svg className="w-3.5 h-3.5 text-[#CC0000]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3.5 h-3.5 text-[#7E0001]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
