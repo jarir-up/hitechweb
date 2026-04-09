@@ -1,5 +1,5 @@
-import { motion, useInView, animate } from 'framer-motion'
-import { useEffect, useRef } from 'react'
+import { motion, useInView, animate, useMotionValue, useTransform, useSpring } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const WHATSAPP_URL = `https://wa.me/923343219844?text=Hello%2C%20I'd%20like%20to%20get%20a%20quote%20from%20Hi-Tech%20Printers.`
@@ -37,6 +37,24 @@ const glass = (a = 0.07, blur = 24) => ({
   border: '1px solid rgba(255,255,255,0.11)',
   boxShadow: '0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06)',
 })
+
+/* ── CMYK registration mark — Easter egg for press people ───── */
+function RegMark({ opacity = 0.07, size = 28 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 28 28"
+      fill="none"
+      aria-hidden="true"
+      style={{ opacity, color: 'white' }}
+    >
+      <circle cx="14" cy="14" r="8.5" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="14" y1="0" x2="14" y2="28" stroke="currentColor" strokeWidth="0.6" />
+      <line x1="0" y1="14" x2="28" y2="14" stroke="currentColor" strokeWidth="0.6" />
+    </svg>
+  )
+}
 
 /* ── data ───────────────────────────────────────────────────── */
 const stats = [
@@ -205,18 +223,28 @@ function WhatsAppIcon({ className = 'w-5 h-5' }) {
 
 /* ── Animated counter ───────────────────────────────────────── */
 function Counter({ to, suffix = '', duration = 1.8 }) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-60px' })
+  const textRef = useRef(null)  // inner span — direct DOM text mutation
+  const inView = useInView(textRef, { once: true, margin: '-60px' })
+  const [stamped, setStamped] = useState(false)
   useEffect(() => {
-    if (!inView || !ref.current) return
+    if (!inView || !textRef.current) return
     const ctrl = animate(0, to, {
       duration,
       ease: [0.22, 1, 0.36, 1],
-      onUpdate(v) { if (ref.current) ref.current.textContent = Math.round(v) + suffix },
+      onUpdate(v) { if (textRef.current) textRef.current.textContent = Math.round(v) + suffix },
+      onComplete() { setStamped(true) },
     })
     return () => ctrl.stop()
   }, [inView, to, suffix, duration])
-  return <span ref={ref}>0{suffix}</span>
+  return (
+    <motion.span
+      style={{ display: 'inline-block' }}
+      animate={stamped ? { scale: [1, 1.22, 0.93, 1.06, 1] } : {}}
+      transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <span ref={textRef}>0{suffix}</span>
+    </motion.span>
+  )
 }
 
 /* ── Section label component ────────────────────────────────── */
@@ -230,11 +258,31 @@ function SectionLabel({ children }) {
 
 /* ══════════════════════════════════════════════════════════════ */
 export default function Home() {
+  /* ── hero mouse parallax ─────────────────────────────────── */
+  const heroRef = useRef(null)
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+  const rotateX = useSpring(useTransform(mouseY, [-1, 1], [6, -6]), { stiffness: 65, damping: 18 })
+  const rotateY = useSpring(useTransform(mouseX, [-1, 1], [-9, 9]), { stiffness: 65, damping: 18 })
+
+  function handleHeroMouseMove(e) {
+    const rect = heroRef.current?.getBoundingClientRect()
+    if (!rect) return
+    mouseX.set((e.clientX - rect.left) / rect.width * 2 - 1)
+    mouseY.set((e.clientY - rect.top) / rect.height * 2 - 1)
+  }
+  function handleHeroMouseLeave() { mouseX.set(0); mouseY.set(0) }
+
   return (
     <div className="pt-16">
 
       {/* ══ 1. HERO ══════════════════════════════════════════ */}
-      <section className="relative bg-[#0E182A] text-white overflow-hidden min-h-[100svh] flex flex-col justify-center">
+      <section
+        ref={heroRef}
+        onMouseMove={handleHeroMouseMove}
+        onMouseLeave={handleHeroMouseLeave}
+        className="relative bg-[#0E182A] text-white overflow-hidden min-h-[100svh] flex flex-col justify-center"
+      >
 
         {/* Background photo */}
         <div className="absolute inset-0">
@@ -282,6 +330,12 @@ export default function Home() {
             transition={{ duration: 26, repeat: Infinity, ease: 'linear' }}
           />
         </div>
+
+        {/* CMYK registration marks — Easter egg for press people */}
+        <div className="absolute top-5 left-5 pointer-events-none select-none"><RegMark /></div>
+        <div className="absolute top-5 right-5 pointer-events-none select-none"><RegMark /></div>
+        <div className="absolute bottom-20 left-5 pointer-events-none select-none"><RegMark /></div>
+        <div className="absolute bottom-20 right-5 pointer-events-none select-none"><RegMark /></div>
 
         {/* Content */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 w-full">
@@ -370,11 +424,13 @@ export default function Home() {
             </motion.div>
 
             {/* RIGHT: floating product cards */}
+            <div style={{ perspective: '900px' }}>
             <motion.div
               className="hidden lg:flex flex-col gap-3 items-center"
               initial={{ opacity: 0, x: 52, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ duration: 0.9, delay: 0.4, ease }}
+              style={{ rotateX, rotateY, willChange: 'transform' }}
             >
               {heroCards.map((card, i) => (
                 <motion.div
@@ -413,6 +469,7 @@ export default function Home() {
                 Based in S.I.T.E, Karachi
               </motion.div>
             </motion.div>
+            </div>
           </div>
         </div>
 
@@ -545,9 +602,17 @@ export default function Home() {
                   <div className="absolute inset-0" style={{
                     backgroundImage: 'repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,0.03) 20px,rgba(255,255,255,0.03) 21px)',
                   }} />
-                  <span className="relative text-4xl" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))' }}>
+                  <motion.span
+                    className="relative text-4xl"
+                    style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))', display: 'inline-block' }}
+                    whileHover={{
+                      scale: 1.28,
+                      rotate: [0, -14, 11, -7, 7, 0],
+                      transition: { duration: 0.48, ease: 'easeInOut' },
+                    }}
+                  >
                     {cat.icon}
-                  </span>
+                  </motion.span>
                   {/* bottom fade */}
                   <div className="absolute inset-x-0 bottom-0 h-8" style={{ background: 'linear-gradient(to top,rgba(0,0,0,0.15),transparent)' }} />
                 </div>

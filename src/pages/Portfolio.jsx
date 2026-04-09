@@ -95,7 +95,7 @@ function PortfolioCard({ item, index, featured = false }) {
           >
             {sectorLabel}
           </span>
-          <p className="text-[13px] font-semibold text-white/75 leading-snug mt-0.5 truncate">
+          <p className="text-[13px] font-semibold text-white/75 leading-snug mt-0.5 truncate" title={item.title}>
             {item.title}
           </p>
         </div>
@@ -172,6 +172,7 @@ export default function Portfolio() {
               <button
                 key={sec.id}
                 onClick={() => setActiveSector(sec.id)}
+                aria-pressed={activeSector === sec.id}
                 className="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all duration-200"
                 style={activeSector === sec.id
                   ? { background: 'rgba(126,0,1,0.25)', color: '#fff', border: '1px solid rgba(126,0,1,0.5)' }

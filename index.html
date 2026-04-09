@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/hitech-logo.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Primary Meta -->
@@ -52,8 +52,10 @@
       content="https://hitechprinters.com.pk/hitech-logo.png"
     />
 
-    <!-- Fonts -->
-    <!-- Nacelle font is self-hosted via public/fonts/nacelle — no external font requests -->
+    <!-- Fonts — preload the three weights used in body + headings -->
+    <link rel="preload" as="font" type="font/otf" href="/fonts/nacelle/Nacelle-Regular.otf" crossorigin="anonymous">
+    <link rel="preload" as="font" type="font/otf" href="/fonts/nacelle/Nacelle-SemiBold.otf" crossorigin="anonymous">
+    <link rel="preload" as="font" type="font/otf" href="/fonts/nacelle/Nacelle-Bold.otf" crossorigin="anonymous">
 
     <!-- LocalBusiness + PrintingService Schema (JSON-LD) -->
     <script type="application/ld+json">

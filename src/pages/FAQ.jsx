@@ -144,6 +144,7 @@ function FAQItem({ item, index }) {
       />
       <button
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
         className="w-full text-left flex items-start gap-4 px-6 py-5"
       >
         <span

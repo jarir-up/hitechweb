@@ -121,6 +121,7 @@ export default function Navbar() {
               className="md:hidden p-2 rounded-lg text-white/75 hover:text-white transition-colors"
               style={{ background: menuOpen ? 'rgba(255,255,255,0.1)' : 'transparent' }}
               aria-label="Toggle menu"
+              aria-expanded={menuOpen}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <motion.path

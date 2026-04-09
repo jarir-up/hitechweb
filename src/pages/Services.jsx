@@ -95,7 +95,7 @@ function ServiceRow({ service, index }) {
         href={whatsappUrl(service.name)}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex-shrink-0 flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg transition-all duration-200 opacity-0 group-hover:opacity-100"
+        className="flex-shrink-0 flex items-center gap-1.5 text-[12px] font-semibold px-3 py-1.5 rounded-lg transition-all duration-200 sm:opacity-0 sm:group-hover:opacity-100"
         style={{
           background: 'rgba(37,211,102,0.10)',
           border: '1px solid rgba(37,211,102,0.22)',
@@ -200,6 +200,7 @@ export default function Services() {
               <button
                 key={cat.id}
                 onClick={() => setActive(cat.id)}
+                aria-pressed={active === cat.id}
                 className="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all duration-200"
                 style={active === cat.id
                   ? { background: 'rgba(126,0,1,0.25)', color: '#fff', border: '1px solid rgba(126,0,1,0.5)' }

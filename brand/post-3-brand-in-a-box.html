@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post 3 — Brand in a Box</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@300;400;500&family=Space+Mono&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      background: #0E182A;
+    }
+
+    .canvas {
+      width: 1080px;
+      height: 1080px;
+      background: #0E182A;
+      position: relative;
+      display: flex;
+      align-items: stretch;
+    }
+
+    /* ── Left maroon vertical rule — the only color ── */
+    .rule-bar {
+      width: 6px;
+      background: #7E0001;
+      margin: 120px 0 120px 80px;
+      flex-shrink: 0;
+      border-radius: 3px;
+    }
+
+    /* ── Content column ── */
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 80px 80px 56px;
+    }
+
+    /* Eyebrow */
+    .eyebrow {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 400;
+      font-size: 11px;
+      color: #7E0001;
+      text-transform: uppercase;
+      letter-spacing: 0.30em;
+      margin-bottom: 32px;
+    }
+
+    /* Headline */
+    .headline {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 116px;
+      line-height: 0.88;
+      color: #FFFFFF;
+      text-transform: uppercase;
+      letter-spacing: -0.025em;
+      margin-bottom: 52px;
+    }
+
+    /* Product list */
+    .product-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-bottom: 60px;
+    }
+
+    .product-list li {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 300;
+      font-size: 20px;
+      color: rgba(255, 255, 255, 0.45);
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .product-list li:first-child {
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .product-list li::before {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #7E0001;
+      flex-shrink: 0;
+      opacity: 0.8;
+    }
+
+    /* Glass handle tag */
+    .glass-tag {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      padding: 12px 22px;
+      width: fit-content;
+      margin-bottom: 0;
+    }
+
+    .glass-tag span {
+      font-family: 'Space Mono', monospace;
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.55);
+      letter-spacing: 0.04em;
+    }
+
+    /* Logo — bottom right absolute */
+    .logo {
+      position: absolute;
+      bottom: 72px;
+      right: 80px;
+    }
+
+    .logo img {
+      height: 32px;
+      width: auto;
+      opacity: 0.55;
+    }
+
+    /* Karachi label — bottom left */
+    .location {
+      position: absolute;
+      bottom: 80px;
+      left: 80px;
+      font-family: 'Barlow', sans-serif;
+      font-weight: 300;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.18);
+      text-transform: uppercase;
+      letter-spacing: 0.20em;
+    }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+
+    <!-- Vertical maroon rule -->
+    <div class="rule-bar"></div>
+
+    <!-- Main content -->
+    <div class="content">
+
+      <div class="eyebrow">Brand in a Box</div>
+
+      <div class="headline">Your Brand.<br>One Address.</div>
+
+      <ul class="product-list">
+        <li>Business Cards</li>
+        <li>Letterheads</li>
+        <li>Flyers &amp; Brochures</li>
+        <li>Stickers &amp; Labels</li>
+      </ul>
+
+      <div class="glass-tag">
+        <span>@hitechprinterskhi</span>
+      </div>
+
+    </div>
+
+    <!-- Logo watermark -->
+    <div class="logo">
+      <img src="/hitech-logo-inverted-nobg.png" alt="Hi-Tech Printers" />
+    </div>
+
+    <!-- Location -->
+    <div class="location">S.I.T.E Industrial Area · Karachi</div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post 2 — The Printestimation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@300;400;500&family=Space+Mono&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      background: #0E182A;
+    }
+
+    .canvas {
+      width: 1080px;
+      height: 1080px;
+      background: #0E182A;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 72px 80px;
+    }
+
+    /* Very faint maroon warmth — bottom-left */
+    .canvas::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 10% 95%, rgba(126,0,1,0.10) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Logo — top-left absolute */
+    .logo {
+      position: absolute;
+      top: 72px;
+      left: 80px;
+    }
+
+    .logo img {
+      height: 36px;
+      width: auto;
+      opacity: 0.90;
+    }
+
+    /* ── Glass card ── */
+    .glass-card {
+      width: 100%;
+      max-width: 880px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 6px;
+      /* Faint maroon glow on border */
+      box-shadow:
+        0 0 0 1px rgba(126,0,1,0.25),
+        0 32px 80px rgba(0,0,0,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      padding: 64px 72px 56px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* Eyebrow label */
+    .eyebrow {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      color: #7E0001;
+      text-transform: uppercase;
+      letter-spacing: 0.28em;
+      margin-bottom: 28px;
+    }
+
+    /* Main headline — neobrutalist weight */
+    .headline {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 108px;
+      line-height: 0.90;
+      color: #FFFFFF;
+      text-transform: uppercase;
+      letter-spacing: -0.025em;
+      margin-bottom: 40px;
+    }
+
+    /* Divider */
+    .rule {
+      width: 100%;
+      height: 1px;
+      background: rgba(126,0,1,0.45);
+      margin-bottom: 36px;
+    }
+
+    /* Sub copy */
+    .sub {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 300;
+      font-size: 24px;
+      color: rgba(255, 255, 255, 0.60);
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+      margin-bottom: 44px;
+    }
+
+    /* CTA pill */
+    .cta-pill {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 100px;
+      padding: 12px 28px;
+      width: fit-content;
+    }
+
+    .cta-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.65);
+      letter-spacing: 0.03em;
+    }
+
+    /* Footer — absolute bottom */
+    .footer {
+      position: absolute;
+      bottom: 72px;
+      left: 80px;
+      right: 80px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .handle {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 300;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.22);
+      letter-spacing: 0.08em;
+    }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+
+    <div class="logo">
+      <img src="/hitech-logo-inverted-nobg.png" alt="Hi-Tech Printers" />
+    </div>
+
+    <div class="glass-card">
+      <div class="eyebrow">The Printestimation</div>
+
+      <div class="headline">No Calls.<br>No Haggling.</div>
+
+      <div class="rule"></div>
+
+      <div class="sub">Pakistan's first online print price calculator.<br>Real Karachi prices. Instant quotes.</div>
+
+      <div class="cta-pill">
+        <span class="cta-text">hitechprinters.com.pk/calculator</span>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span class="handle">@hitechprinterskhi</span>
+    </div>
+
+  </div>
+</body>
+</html>

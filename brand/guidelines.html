@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hi-Tech Printers — Brand Guidelines v1.0</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 11pt;
+      line-height: 1.7;
+      color: #111;
+      background: #fff;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 60px 40px;
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { padding: 20mm 18mm; font-size: 10pt; }
+      .no-print { display: none; }
+      h1.cover-title { page-break-after: always; }
+      section { page-break-inside: avoid; }
+      .page-break { page-break-before: always; }
+    }
+
+    /* ── Type scale ── */
+    h1, h2, h3, h4 {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      letter-spacing: -0.01em;
+    }
+
+    h1.cover-title {
+      font-size: 38pt;
+      font-weight: 900;
+      line-height: 1.05;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-size: 9pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #111;
+      margin-top: 52px;
+      margin-bottom: 16px;
+      padding-bottom: 6px;
+      border-bottom: 1.5px solid #111;
+    }
+
+    h3 {
+      font-size: 13pt;
+      font-weight: 700;
+      margin-top: 28px;
+      margin-bottom: 8px;
+    }
+
+    h4 {
+      font-size: 10pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 20px;
+      margin-bottom: 6px;
+      color: #444;
+    }
+
+    p { margin-bottom: 14px; }
+
+    ul, ol {
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+
+    li { margin-bottom: 6px; }
+
+    blockquote {
+      border-left: 3px solid #111;
+      padding: 12px 20px;
+      margin: 24px 0;
+      font-style: italic;
+      font-size: 12pt;
+      color: #333;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 9.5pt;
+      background: #f4f4f4;
+      padding: 2px 5px;
+      border-radius: 2px;
+    }
+
+    /* ── Cover ── */
+    .cover {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding-bottom: 48px;
+      margin-bottom: 60px;
+      border-bottom: 2px solid #111;
+    }
+
+    .cover-meta {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 9pt;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #666;
+      margin-bottom: 16px;
+    }
+
+    .cover-sub {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 11pt;
+      color: #555;
+      margin-top: 6px;
+      font-weight: 400;
+    }
+
+    /* ── Color swatches ── */
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 20px 0 28px;
+    }
+
+    .swatch {
+      border: 1px solid #ddd;
+    }
+
+    .swatch-block {
+      height: 60px;
+      display: block;
+    }
+
+    .swatch-info {
+      padding: 8px 10px;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .swatch-name {
+      font-size: 8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: block;
+    }
+
+    .swatch-hex {
+      font-family: 'Courier New', monospace;
+      font-size: 8.5pt;
+      color: #555;
+      display: block;
+    }
+
+    .swatch-role {
+      font-size: 7.5pt;
+      color: #888;
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* ── Do / Don't ── */
+    .rule-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .rule-col h4 {
+      font-size: 8pt;
+      margin-bottom: 10px;
+    }
+
+    .rule-col ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .rule-col ul li {
+      font-size: 10pt;
+      padding: 5px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .do li::before { content: "✓  "; font-weight: 700; }
+    .dont li::before { content: "✗  "; }
+
+    /* ── Reference table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0 28px;
+      font-size: 10pt;
+    }
+
+    th {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      text-align: left;
+      padding: 8px 12px;
+      border-bottom: 2px solid #111;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e0e0e0;
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    /* ── Divider ── */
+    hr {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 40px 0;
+    }
+
+    /* ── Footer ── */
+    .doc-footer {
+      margin-top: 80px;
+      padding-top: 20px;
+      border-top: 1.5px solid #111;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 8.5pt;
+      color: #888;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       COVER
+  ═══════════════════════════════════════════ -->
+  <div class="cover">
+    <p class="cover-meta">Hi-Tech Printers · Karachi · Brand Guidelines</p>
+    <h1 class="cover-title">Brand<br>Guidelines</h1>
+    <p class="cover-sub">Version 1.0 · April 2026 · For internal use and partner reference</p>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+       1. BRAND ESSENCE
+  ═══════════════════════════════════════════ -->
+  <section>
+    <h2>01 — Brand Essence</h2>
+
+    <h3>Who We Are</h3>
+    <p>Hi-Tech Printers is a professional offset and digital printing house based in S.I.T.E Industrial Area, Karachi. We have been operating for 20+ years — printing for schools, corporates, pharmaceutical companies, garment exporters, retailers, and everyone in between.</p>
+    <p>We are not a new brand discovering its voice. We are an established operation that is now, deliberately, building a public presence commensurate with the quality we have always delivered privately.</p>
+
+    <h3>The Three Words</h3>
+    <blockquote>
+      Established. Grounded. Unfazed.
+    </blockquote>
+    <p>Not flashy. Not loud. The brand of a press that has been running since before most of its competitors had a Facebook page. Confident without announcing it. Karachi without performing it. We do not need to convince you — we show up, print right, deliver, and move on.</p>
+
+    <h3>What We Are Building Toward</h3>
+    <p>Two bets define our digital strategy:</p>
+    <ol>
+      <li><strong>The Printestimation</strong> — Pakistan's first online print price calculator. Real Karachi market prices. No calls, no haggling, no Pakistan Chowk theatre. Available at <code>hitechprinters.com.pk/calculator</code></li>
+      <li><strong>Brand in a Box</strong> — A complete branding package (cards, letterheads, flyers, stickers) for small Karachi businesses that want to look professional without managing multiple suppliers.</li>
+    </ol>
+    <p>Our social media presence (@hitechprinterskhi) serves a third function: becoming the most helpful voice in the Karachi print ecosystem — answering questions, demystifying pricing, and building authority before the sale.</p>
+  </section>
+
+  <div class="page-break"></div>
+
+
+  <!-- ═══════════════════════════════════════════
+       2. LOGO
+  ═══════════════════════════════════════════ -->
+  <section>
+    <h2>02 — Logo</h2>
+
+    <h3>Variants</h3>
+    <p>The logo consists of the wordmark <strong>Hi-Tech Printers</strong> in a condensed sans-serif with a red arc above it. There are three production variants:</p>
+    <table>
+      <tr>
+        <th>Variant</th>
+        <th>Filename</th>
+        <th>When to Use</th>
+      </tr>
+      <tr>
+        <td><strong>Inverted — No Background</strong><br><em>(Primary)</em></td>
+        <td><code>hitech-logo-inverted-nobg.png</code></td>
+        <td>All dark backgrounds — website, social media, dark print materials. This is the default.</td>
+      </tr>
+      <tr>
+        <td><strong>Standard — No Background</strong></td>
+        <td><code>hitech-logo-nobg.png</code></td>
+        <td>Light or white backgrounds only — invoices, letterheads, certificates.</td>
+      </tr>
+      <tr>
+        <td><strong>Standard — On Background</strong></td>
+        <td><code>hitech-logo.png</code></td>
+        <td>Fallback only when transparent PNG causes rendering issues.</td>
+      </tr>
+    </table>
+
+    <h3>Clear Space</h3>
+    <p>Maintain minimum clear space equal to the height of the letter "H" in the wordmark on all four sides. Never crowd the logo against an edge or another element.</p>
+
+    <h3>Logo Rules</h3>
+    <div class="rule-grid">
+      <div class="rule-col do">
+        <h4>✓ Do</h4>
+        <ul>
+          <li>Use the inverted version on all dark surfaces</li>
+          <li>Maintain clear space on all sides</li>
+          <li>Scale proportionally always</li>
+          <li>Place on flat, uncluttered backgrounds</li>
+        </ul>
+      </div>
+      <div class="rule-col dont">
+        <h4>✗ Do Not</h4>
+        <ul>
+          <li>Recolor the red arc</li>
+          <li>Stretch or distort the logo</li>
+          <li>Add drop shadows or glow effects</li>
+          <li>Place on busy photographic backgrounds</li>
+          <li>Recreate the logo in other typefaces</li>
+          <li>Use the rasterized JPG at small sizes</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       3. COLOR
+  ═══════════════════════════════════════════ -->
+  <section>
+    <h2>03 — Color System</h2>
+
+    <p>The palette follows a 60-30-10 rule. Navy deep dominates every surface. Mid navy fills cards, panels, and glass layers. Maroon appears once per composition — as an accent, a signature, not a wallpaper. White is the instrument of precision.</p>
+
+    <div class="swatch-grid">
+      <div class="swatch">
+        <span class="swatch-block" style="background:#0E182A;"></span>
+        <div class="swatch-info">
+          <span class="swatch-name">Navy Deep</span>
+          <span class="swatch-hex">#0E182A</span>
+          <span class="swatch-role">60% — all backgrounds</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <span class="swatch-block" style="background:#162035; border-top: 1px solid #ddd;"></span>
+        <div class="swatch-info">
+          <span class="swatch-name">Navy Mid</span>
+          <span class="swatch-hex">#162035 / #1E2D47</span>
+          <span class="swatch-role">30% — cards, glass panels</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <span class="swatch-block" style="background:#7E0001;"></span>
+        <div class="swatch-info">
+          <span class="swatch-name">Maroon</span>
+          <span class="swatch-hex">#7E0001</span>
+          <span class="swatch-role">10% — accent, signature only</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <span class="swatch-block" style="background:#FFFFFF; border-top: 1px solid #ddd;"></span>
+        <div class="swatch-info">
+          <span class="swatch-name">White</span>
+          <span class="swatch-hex">#FFFFFF</span>
+          <span class="swatch-role">Text on dark, precision element</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <span class="swatch-block" style="background:#2A2A2A;"></span>
+        <div class="swatch-info">
+          <span class="swatch-name">Charcoal</span>
+          <span class="swatch-hex">#2A2A2A</span>
+          <span class="swatch-role">Text on light backgrounds</span>
+        </div>
+      </div>
+      <div class="swatch">
+        <span class="swatch-block" style="background:#25D366;"></span>
+        <div class="swatch-info">
+          <span class="swatch-name">WhatsApp Green</span>
+          <span class="swatch-hex">#25D366</span>
+          <span class="swatch-role">WhatsApp CTAs only — nowhere else</span>
+        </div>
+      </div>
+    </div>
+
+    <h4>Critical Color Rules</h4>
+    <ul>
+      <li>Maroon <code>#7E0001</code> is an accent — never use as a background fill or dominant color</li>
+      <li>Red <code>#CC0000</code> belongs only to the logo arc — do not use elsewhere in designs</li>
+      <li>WhatsApp green is a functional color for messaging CTAs only — it is not a brand color</li>
+      <li>Dark mode is the default. There is no light mode for social media. Ever.</li>
+    </ul>
+  </section>
+
+  <div class="page-break"></div>
+
+
+  <!-- ═══════════════════════════════════════════
+       4. TYPOGRAPHY
+  ═══════════════════════════════════════════ -->
+  <section>
+    <h2>04 — Typography</h2>
+
+    <h3>The Typeface: Nacelle</h3>
+    <p>Nacelle is the single typeface used across all Hi-Tech Printers digital touchpoints. It is self-hosted and covers weights 300 through 700, including italics. No other typeface is permitted on the website, social media graphics, or brand materials.</p>
+
+    <p>Nacelle is a geometric sans-serif with humanist warmth — it is precise without being cold. It works at display sizes without feeling empty, and at body sizes without feeling compressed. It is the right choice for a brand that is modern but not trend-chasing.</p>
+
+    <table>
+      <tr>
+        <th>Weight</th>
+        <th>Value</th>
+        <th>Usage</th>
+      </tr>
+      <tr>
+        <td>Light</td>
+        <td><code>300</code></td>
+        <td>Large display quotes, secondary captions</td>
+      </tr>
+      <tr>
+        <td>Regular</td>
+        <td><code>400</code></td>
+        <td>Body copy, descriptions, UI labels</td>
+      </tr>
+      <tr>
+        <td>SemiBold</td>
+        <td><code>600</code></td>
+        <td>Section headers, nav items, emphasis</td>
+      </tr>
+      <tr>
+        <td>Bold</td>
+        <td><code>700</code></td>
+        <td>Headline type, CTAs, post headlines</td>
+      </tr>
+    </table>
+
+    <h4>Social Media Typography Rules</h4>
+    <ul>
+      <li>Headlines: Nacelle Bold or SemiBold, 3–6 words maximum, ALL CAPS preferred</li>
+      <li>Supporting text: Nacelle Regular, one short sentence, not a paragraph</li>
+      <li>Never use more than 2 type sizes in a single social post</li>
+      <li>Never use italic for emphasis on social — use weight contrast instead</li>
+      <li>URLs and handles: Nacelle Regular, small, at the base — not competing with the headline</li>
+    </ul>
+
+    <h4>For print materials where Nacelle is unavailable</h4>
+    <p>Use <strong>Montserrat</strong> (Google Fonts) as the substitution typeface. Same weight hierarchy applies. Do not use Helvetica, Arial, or system fonts as brand stand-ins.</p>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       5. PHOTOGRAPHY & VISUAL LANGUAGE
+  ═══════════════════════════════════════════ -->
+  <section>
+    <h2>05 — Photography & Visual Language</h2>
+
+    <p>Hi-Tech Printers' visual language is built on <strong>process, not promotion</strong>. Every image should show the work — ink, paper, press, product — not describe or sell it.</p>
+
+    <h3>The Heidelberg Principle</h3>
+    <p>Reference: Heidelberg GmbH's own Instagram and communications. Their posts are almost entirely process: ink hitting paper, rollers in motion, close-ups of fresh print runs showing registration marks and color accuracy. No lifestyle. No staged office scenes. Just craft, shot beautifully.</p>
+    <p>This is the standard. If a photograph could belong to a stock library, it does not belong to Hi-Tech Printers.</p>
+
+    <h3>Two Asset Categories</h3>
+    <table>
+      <tr>
+        <th>Category</th>
+        <th>Source</th>
+        <th>Use For</th>
+      </tr>
+      <tr>
+        <td><strong>Process / Behind-the-press</strong></td>
+        <td><code>/brand-pictures/</code> — iPhone shots of offset press, paper stacks, press room, Epson digital unit, desk</td>
+        <td>Stories, BTS content, "this is where your job runs" posts, press close-ups</td>
+      </tr>
+      <tr>
+        <td><strong>Portfolio / Client work</strong></td>
+        <td><code>/public/images/</code> — professional .webp shots of finished products (brochures, books, cards, labels, diaries) for 15+ named clients</td>
+        <td>Social proof posts, "Our Work" content, product category carousels, client spotlights</td>
+      </tr>
+    </table>
+
+    <h4>Photography Direction for New Shots</h4>
+    <ul>
+      <li>Shoot close. Fill the frame with the product or the press — no dead space</li>
+      <li>Natural or industrial lighting — no ring flash aesthetic</li>
+      <li>Dark or neutral surfaces — let the print be the subject</li>
+      <li>Show paper texture, ink gloss, registration precision when possible</li>
+      <li>Never shoot blurry, never shoot with a dirty lens</li>
+      <li>Portrait or square formats only for Instagram — no landscape crops</li>
+    </ul>
+
+    <h4>What We Do Not Use</h4>
+    <ul>
+      <li>Stock photography of any kind</li>
+      <li>Smiling people holding business cards</li>
+      <li>Flat lay shots with coffee cups and laptops</li>
+      <li>Any image that could be "anyone's" brand</li>
+    </ul>
+  </section>
+
+  <div class="page-break"></div>
+
+
+  <!-- ═══════════════════════════════════════════
+       6. INSTAGRAM & SOCIAL MEDIA
+  ═══════════════════════════════════════════ -->
+  <section>
+    <h2>06 — Instagram & Social Media</h2>
+
+    <p>Handle: <strong>@hitechprinterskhi</strong></p>
+
+    <h3>Design System for Posts</h3>
+    <p>Every Instagram post follows the same structural logic, regardless of the content type:</p>
+    <ol>
+      <li><strong>One dominant element</strong> — either a headline or a photograph. Never both competing</li>
+      <li><strong>One accent</strong> — a thin maroon line, a frosted glass panel, a bold border rule. One, not many</li>
+      <li><strong>Near-black background</strong> — <code>#0E182A</code> or deeper. Never white or light</li>
+      <li><strong>Logo present but not dominant</strong> — small, in a corner, as a signature</li>
+    </ol>
+
+    <h3>Design Philosophies in Use</h3>
+    <table>
+      <tr>
+        <th>Philosophy</th>
+        <th>What It Means for Hitech Posts</th>
+      </tr>
+      <tr>
+        <td><strong>Glassmorphism</strong></td>
+        <td>Frosted, semi-transparent panels floating over dark backgrounds — used for supporting text, URLs, secondary information. Creates depth and modern precision.</td>
+      </tr>
+      <tr>
+        <td><strong>Neobrutalism</strong></td>
+        <td>Bold typographic aggression — massive condensed headlines, stark contrast, intentional raw edges. Used for announcement posts (launches, offers, tools). The press doesn't whisper.</td>
+      </tr>
+      <tr>
+        <td><strong>Dark Editorial</strong></td>
+        <td>Magazine-style layouts — large single message, generous negative space, one strong image. Used for portfolio showcases and process content. Think Monocle, not Scroll.</td>
+      </tr>
+    </table>
+
+    <h3>Post Content Pillars</h3>
+    <table>
+      <tr>
+        <th>Pillar</th>
+        <th>Frequency</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td><strong>The Work</strong></td>
+        <td>2–3x / week</td>
+        <td>Finished client jobs. Portfolio shots. "Just came off the press." No client name needed unless they consent.</td>
+      </tr>
+      <tr>
+        <td><strong>The Press</strong></td>
+        <td>1x / week</td>
+        <td>Behind-the-scenes. Process shots. The machines, the paper, the people. Heritage, craft, capability.</td>
+      </tr>
+      <tr>
+        <td><strong>The Tool</strong></td>
+        <td>1–2x / week</td>
+        <td>Printestimation feature, calculator posts, pricing transparency content. Our core digital differentiator.</td>
+      </tr>
+      <tr>
+        <td><strong>The Answer</strong></td>
+        <td>Ongoing in comments</td>
+        <td>Answering printing questions in other accounts' comment sections. Building authority before the follow.</td>
+      </tr>
+      <tr>
+        <td><strong>The Meme / Reactive</strong></td>
+        <td>1x / week</td>
+        <td>Current events, print industry humour, relatable B2B content. Must still look good. Never low-res.</td>
+      </tr>
+    </table>
+
+    <h3>Launch Post Order</h3>
+    <ol>
+      <li><strong>Website launch</strong> — "We're online." with URL</li>
+      <li><strong>The Printestimation</strong> — Calculator tool reveal. Pakistan-first angle.</li>
+      <li><strong>Brand in a Box</strong> — Complete branding package for local businesses.</li>
+    </ol>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       7. VOICE & TONE
+  ═══════════════════════════════════════════ -->
+  <section>
+    <h2>07 — Voice & Tone</h2>
+
+    <h3>The Tapal Principle</h3>
+    <p>Reference: Tapal Tea's brand communication. A Jodia Bazaar dukan from 1947 that beat multinationals not by being louder, but by being more rooted. Their social presence never shouts — it simply reminds you they were here before you were born, and will be here after.</p>
+    <p>Hitech's voice carries the same energy. We do not chase. We do not perform enthusiasm. We have been printing right for 20 years — the work speaks and we occasionally translate.</p>
+
+    <h3>Voice Characteristics</h3>
+    <table>
+      <tr>
+        <th>Quality</th>
+        <th>Sounds Like</th>
+        <th>Does Not Sound Like</th>
+      </tr>
+      <tr>
+        <td>Direct</td>
+        <td>"Your quote is ready."</td>
+        <td>"We're excited to share that pricing info is now available!"</td>
+      </tr>
+      <tr>
+        <td>Confident</td>
+        <td>"20 years in print. One price calculator."</td>
+        <td>"We think we might be one of the only ones doing this in Pakistan?"</td>
+      </tr>
+      <tr>
+        <td>Dry warmth</td>
+        <td>"Pakistan Chowk will still be there. Your quote won't wait."</td>
+        <td>"Say goodbye to the hassle of traditional printing! 🎉"</td>
+      </tr>
+      <tr>
+        <td>Karachi</td>
+        <td>Cadence that feels local, references that land</td>
+        <td>Transliterated Roman Urdu that reads like a parody</td>
+      </tr>
+    </table>
+
+    <h3>Caption Structure</h3>
+    <ul>
+      <li><strong>Line 1:</strong> The hook — short, complete thought. Could stand alone.</li>
+      <li><strong>Line 2–3:</strong> One expansion. Context if necessary. No essays.</li>
+      <li><strong>Line 4:</strong> CTA or handle reference. One link, one action.</li>
+      <li><strong>Hashtags:</strong> 5–8 maximum, in the first comment — not cluttering the caption</li>
+    </ul>
+
+    <h4>Punctuation & Formatting Rules</h4>
+    <ul>
+      <li>No exclamation marks unless the moment genuinely earns one (rare)</li>
+      <li>No ellipsis for dramatic effect ("Coming soon...")</li>
+      <li>Em dash over parentheses — Karachi speaks in asides, not footnotes</li>
+      <li>Numbers as numerals always: "20 years", not "twenty years"</li>
+      <li>Urdu/English code-switching is encouraged when natural, never forced</li>
+    </ul>
+  </section>
+
+  <div class="page-break"></div>
+
+
+  <!-- ═══════════════════════════════════════════
+       8. REFERENCE BRANDS
+  ═══════════════════════════════════════════ -->
+  <section>
+    <h2>08 — Reference Brands</h2>
+    <p>These are not mood boards. They are strategic references — each chosen for a specific quality to extract and apply.</p>
+
+    <table>
+      <tr>
+        <th>Brand</th>
+        <th>What to Steal</th>
+        <th>What to Leave Behind</th>
+      </tr>
+      <tr>
+        <td><strong>Tapal Tea</strong><br>Pakistan</td>
+        <td>Quiet dominance. Heritage as identity, not nostalgia. The press is the Danedar — lead with origin the way Tapal leads with theirs. "We were here before you were born."</td>
+        <td>Their softer, mass-market tone in tea-specific campaigns. We are B2B at heart.</td>
+      </tr>
+      <tr>
+        <td><strong>Heidelberg GmbH</strong><br>Germany</td>
+        <td>Process-first visual language. Ink on paper, rollers in motion, fresh print close-ups. Industrial precision made aesthetic. They sell what the machine does to paper — not the machine itself.</td>
+        <td>Their technical depth (we don't need to explain plate making to Instagram). Their German corporate formality.</td>
+      </tr>
+      <tr>
+        <td><strong>Gul Ahmed / Ideas</strong><br>Pakistan</td>
+        <td>Bilingual warmth with design discipline. Started in manufacturing, became a lifestyle brand without abandoning craft roots. Expensive feel, family energy. Never low-res. Never chaotic.</td>
+        <td>Their lifestyle photography and fashion context. We are industrial, not aspirational lifestyle.</td>
+      </tr>
+    </table>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       9. THE DON'T LIST
+  ═══════════════════════════════════════════ -->
+  <section>
+    <h2>09 — The Don't List</h2>
+
+    <div class="rule-grid">
+      <div class="rule-col dont">
+        <h4>✗ Visual</h4>
+        <ul>
+          <li>Red as a background fill (logo arc only)</li>
+          <li>Light backgrounds on social media posts</li>
+          <li>Stock photography of any kind</li>
+          <li>Clip art, generic icons, decorative shapes</li>
+          <li>Gradients as design crutches (depth only)</li>
+          <li>Drop shadows on the logo</li>
+          <li>More than one accent element per composition</li>
+          <li>Low resolution images — ever</li>
+        </ul>
+      </div>
+      <div class="rule-col dont">
+        <h4>✗ Voice & Tone</h4>
+        <ul>
+          <li>Exclamation marks as a default</li>
+          <li>Forced Urdu transliteration</li>
+          <li>Performative enthusiasm</li>
+          <li>Asking for follows/likes/shares directly</li>
+          <li>Spelling or grammar errors in any post</li>
+          <li>Naming specific press model on the website</li>
+          <li>Overselling in captions</li>
+          <li>Replying to criticism with defensiveness</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════
+       10. KEY INFORMATION
+  ═══════════════════════════════════════════ -->
+  <section>
+    <h2>10 — Key Information</h2>
+    <table>
+      <tr>
+        <th>Item</th>
+        <th>Detail</th>
+      </tr>
+      <tr><td>Website</td><td>hitechprinters.com.pk</td></tr>
+      <tr><td>Calculator</td><td>hitechprinters.com.pk/calculator</td></tr>
+      <tr><td>Services</td><td>hitechprinters.com.pk/services</td></tr>
+      <tr><td>Instagram</td><td>@hitechprinterskhi</td></tr>
+      <tr><td>WhatsApp</td><td>+92 334 321 9844</td></tr>
+      <tr><td>Address</td><td>D-123/A, S.I.T.E Industrial Area, Near Bawani Chali, Karachi</td></tr>
+      <tr><td>Primary font</td><td>Nacelle (self-hosted) — weights 300, 400, 600, 700</td></tr>
+      <tr><td>Logo (primary)</td><td>hitech-logo-inverted-nobg.png (white, for dark bg)</td></tr>
+      <tr><td>Logo (secondary)</td><td>hitech-logo-nobg.png (charcoal, for light bg)</td></tr>
+    </table>
+  </section>
+
+
+  <!-- ── Footer ── -->
+  <div class="doc-footer">
+    <span>Hi-Tech Printers · Brand Guidelines v1.0</span>
+    <span>April 2026 · Internal document</span>
+  </div>
+
+</body>
+</html>

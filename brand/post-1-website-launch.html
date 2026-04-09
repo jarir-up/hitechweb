@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post 1 — Website Launch</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@300;400;500&family=Space+Mono&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1080px;
+      height: 1080px;
+      overflow: hidden;
+      background: #0E182A;
+      display: flex;
+      align-items: stretch;
+      justify-content: stretch;
+    }
+
+    .canvas {
+      width: 1080px;
+      height: 1080px;
+      background: #0E182A;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 72px 80px;
+    }
+
+    /* Subtle depth — very faint radial at bottom-right, barely perceptible */
+    .canvas::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 85% 90%, rgba(126,0,1,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── Logo ── */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .logo img {
+      height: 38px;
+      width: auto;
+      opacity: 0.92;
+    }
+
+    /* ── Center block ── */
+    .center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-bottom: 24px;
+    }
+
+    .headline {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 148px;
+      line-height: 0.92;
+      color: #FFFFFF;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      margin-bottom: 40px;
+    }
+
+    .accent-rule {
+      width: 120px;
+      height: 3px;
+      background: #7E0001;
+      margin-bottom: 40px;
+    }
+
+    /* Glassmorphism URL panel */
+    .glass-panel {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 4px;
+      padding: 14px 28px;
+      width: fit-content;
+    }
+
+    .url-text {
+      font-family: 'Space Mono', monospace;
+      font-size: 22px;
+      color: rgba(255, 255, 255, 0.75);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .tagline {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 300;
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.28);
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+    }
+
+    .handle {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 400;
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.28);
+      letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+
+    <!-- Logo top-left -->
+    <div class="logo">
+      <img src="/hitech-logo-inverted-nobg.png" alt="Hi-Tech Printers" />
+    </div>
+
+    <!-- Center: headline + accent + glass URL -->
+    <div class="center">
+      <div class="headline">We're<br>Online.</div>
+      <div class="accent-rule"></div>
+      <div class="glass-panel">
+        <span class="url-text">hitechprinters.com.pk</span>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <span class="tagline">Karachi · Est. 20+ Years</span>
+      <span class="handle">@hitechprinterskhi</span>
+    </div>
+
+  </div>
+</body>
+</html>

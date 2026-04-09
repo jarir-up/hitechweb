@@ -114,10 +114,7 @@ export default function Contact() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, ease }}>
             <p className="text-[#7E0001] text-[11px] font-bold uppercase tracking-[0.22em] mb-3">Contact Us</p>
-            <h1
-              className="text-[2.2rem] md:text-[3.2rem] font-bold leading-tight tracking-tight mb-5 text-white"
-             
-            >
+            <h1 className="text-[2.2rem] md:text-[3.2rem] font-bold leading-tight tracking-tight mb-5 text-white">
               Get in Touch
             </h1>
             <p className="text-white/45 max-w-xl text-lg leading-relaxed">
@@ -145,10 +142,7 @@ export default function Contact() {
             >
               {/* Info card */}
               <div className="rounded-2xl p-6 space-y-5" style={glass(0.06, 20)}>
-                <h2
-                  className="font-black text-white text-xl mb-2"
-                 
-                >
+                <h2 className="font-black text-white text-xl mb-2">
                   Hi-Tech Printers
                 </h2>
 

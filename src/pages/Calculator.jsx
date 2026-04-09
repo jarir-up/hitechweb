@@ -537,7 +537,7 @@ function PriceNotification({ onDismiss }) {
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 120, opacity: 0 }}
       transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-      className="fixed top-24 right-5 z-50 rounded-xl p-4 w-64"
+      className="fixed top-24 right-5 z-50 rounded-xl p-4 w-56 sm:w-64"
       style={{ background: 'rgba(30,30,30,0.95)', backdropFilter: 'blur(20px)', border: '1px solid rgba(204,102,0,0.30)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}
     >
       <div className="flex items-start justify-between gap-3 mb-2">
@@ -713,7 +713,7 @@ export default function Calculator() {
             <div className="grid lg:grid-cols-3 gap-6 items-start">
 
               {/* Left: config panels */}
-              <div className="lg:col-span-2 space-y-5">
+              <div className="lg:col-span-2 space-y-5 order-2 lg:order-1">
 
                 {/* ① Product selector */}
                 <div className="calc-glass-card rounded-2xl p-6">
@@ -781,7 +781,7 @@ export default function Calculator() {
                       step={sliderCfg.step}
                     />
                     <div className="mt-4 flex items-center gap-2">
-                      <span className="text-xs text-gray-400">Custom qty:</span>
+                      <span className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>Custom qty:</span>
                       <input
                         type="number"
                         value={qty}
@@ -789,7 +789,7 @@ export default function Calculator() {
                         max={999999}
                         step={sliderCfg.step}
                         onChange={e => { setQty(Math.max(moq, parseInt(e.target.value) || moq)); triggerNotifOnce() }}
-                        className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm w-28 focus:outline-none focus:border-[#7E0001]"
+                        className="calc-input text-sm w-28 px-3 py-1.5"
                       />
                     </div>
                   </div>
@@ -910,9 +910,9 @@ export default function Calculator() {
                         <StepLabel n={S()}>Spot UV Coating</StepLabel>
                         <label className={`flex items-start gap-3 cursor-pointer ${qty < 1000 ? 'opacity-50 pointer-events-none' : ''}`}>
                           <input type="checkbox" checked={bcSpotUV} disabled={qty < 1000} onChange={e => setBcSpotUV(e.target.checked)} className="accent-[#7E0001] w-4 h-4 mt-0.5" />
-                          <span className="text-sm text-gray-700">
+                          <span className="text-sm text-white/75">
                             Add Spot UV
-                            <span className="block text-xs text-gray-400 mt-0.5">+PKR 2/card · available at 1,000+ qty only</span>
+                            <span className="block text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.40)' }}>+PKR 2/card · available at 1,000+ qty only</span>
                           </span>
                         </label>
                       </div>
@@ -1078,7 +1078,7 @@ export default function Calculator() {
                 {product === 'notepad_a5' && (
                   <div className="calc-glass-card rounded-2xl p-6">
                     <StepLabel n={S()}>Specifications</StepLabel>
-                    <ul className="space-y-1 text-sm text-gray-600">
+                    <ul className="space-y-1 text-sm text-white/55">
                       <li>• Paper: 70 GSM · Pages: 100 per pad</li>
                       <li>• Size: A5 · Rate: PKR 450 per pad</li>
                     </ul>
@@ -1089,63 +1089,63 @@ export default function Calculator() {
               </div>
 
               {/* Right: estimate panel */}
-              <div className="lg:col-span-1">
-                <div className="bg-[#1A1A1A] text-white rounded-xl p-6 shadow-sm sticky top-24">
+              <div className="lg:col-span-1 order-1 lg:order-2">
+                <div className="bg-[#1A1A1A] text-white rounded-xl p-6 shadow-sm lg:sticky lg:top-24">
                   <div className="text-[#7E0001] text-xs font-semibold uppercase tracking-wider mb-4">Your Estimate</div>
 
                   {estimate.isCustom ? (
                     <div className="mb-6">
-                      <div className="text-gray-400 text-sm mb-2">{ALL_PRODUCTS.find(p => p.id === product)?.label}</div>
+                      <div className="text-white/40 text-sm mb-2">{ALL_PRODUCTS.find(p => p.id === product)?.label}</div>
                       <div className="text-2xl font-black text-white mb-3">Custom Quote</div>
-                      <p className="text-sm text-gray-400 leading-relaxed">{estimate.customNote}</p>
+                      <p className="text-sm text-white/40 leading-relaxed">{estimate.customNote}</p>
                     </div>
                   ) : (
                     <div className="mb-5">
-                      <div className="text-gray-400 text-sm mb-1">{ALL_PRODUCTS.find(p => p.id === product)?.label}</div>
+                      <div className="text-white/40 text-sm mb-1">{ALL_PRODUCTS.find(p => p.id === product)?.label}</div>
                       <div className="text-4xl font-black text-white mb-1 tabular-nums">PKR {estimate.total.toLocaleString()}</div>
-                      <div className="text-sm text-gray-400">≈ PKR {Number(estimate.perUnit).toFixed(2)} {estimate.unit}</div>
+                      <div className="text-sm text-white/40">≈ PKR {Number(estimate.perUnit).toFixed(2)} {estimate.unit}</div>
                       {estimate.foldCharge > 0 && <div className="text-xs text-[#7E0001] mt-1">incl. PKR 500 fold surcharge</div>}
                     </div>
                   )}
 
                   {!estimate.isCustom && (
                     <div className="space-y-1.5 text-sm border-t border-white/10 pt-4 mb-5">
-                      <div className="flex justify-between"><span className="text-gray-400">Qty</span><span>{qty.toLocaleString()}</span></div>
-                      <div className="flex justify-between"><span className="text-gray-400">Per unit</span><span>PKR {Number(estimate.perUnit).toFixed(2)}</span></div>
+                      <div className="flex justify-between"><span className="text-white/40">Qty</span><span>{qty.toLocaleString()}</span></div>
+                      <div className="flex justify-between"><span className="text-white/40">Per unit</span><span>PKR {Number(estimate.perUnit).toFixed(2)}</span></div>
                       {product === 'business_card' && <>
-                        <div className="flex justify-between"><span className="text-gray-400">Paper</span><span>{bcPaper} GSM</span></div>
-                        <div className="flex justify-between"><span className="text-gray-400">Lam</span><span className="capitalize">{bcLam}</span></div>
-                        <div className="flex justify-between"><span className="text-gray-400">Sides</span><span className="capitalize">{bcSides}</span></div>
-                        {bcSides === 'double' && bcSpotUV && <div className="flex justify-between"><span className="text-gray-400">Spot UV</span><span>Yes</span></div>}
+                        <div className="flex justify-between"><span className="text-white/40">Paper</span><span>{bcPaper} GSM</span></div>
+                        <div className="flex justify-between"><span className="text-white/40">Lam</span><span className="capitalize">{bcLam}</span></div>
+                        <div className="flex justify-between"><span className="text-white/40">Sides</span><span className="capitalize">{bcSides}</span></div>
+                        {bcSides === 'double' && bcSpotUV && <div className="flex justify-between"><span className="text-white/40">Spot UV</span><span>Yes</span></div>}
                       </>}
                       {['flyer_a4', 'flyer_a5', 'brochure_a4'].includes(product) && <>
-                        <div className="flex justify-between"><span className="text-gray-400">Paper</span><span>{(product === 'brochure_a4' ? BROCHURE_PAPERS : FLYER_PAPERS).find(p => p.id === flyerPaper)?.label}</span></div>
-                        <div className="flex justify-between"><span className="text-gray-400">Sides</span><span className="capitalize">{flyerSides}</span></div>
-                        {product !== 'flyer_a5' && flyerFold !== 'none' && <div className="flex justify-between"><span className="text-gray-400">Fold</span><span className="capitalize">{flyerFold}</span></div>}
+                        <div className="flex justify-between"><span className="text-white/40">Paper</span><span>{(product === 'brochure_a4' ? BROCHURE_PAPERS : FLYER_PAPERS).find(p => p.id === flyerPaper)?.label}</span></div>
+                        <div className="flex justify-between"><span className="text-white/40">Sides</span><span className="capitalize">{flyerSides}</span></div>
+                        {product !== 'flyer_a5' && flyerFold !== 'none' && <div className="flex justify-between"><span className="text-white/40">Fold</span><span className="capitalize">{flyerFold}</span></div>}
                       </>}
                       {product === 'thank_you_card' && <>
-                        <div className="flex justify-between"><span className="text-gray-400">Sides</span><span className="capitalize">{tcSides}</span></div>
-                        <div className="flex justify-between"><span className="text-gray-400">Lam</span><span className="capitalize">{tcLam}</span></div>
+                        <div className="flex justify-between"><span className="text-white/40">Sides</span><span className="capitalize">{tcSides}</span></div>
+                        <div className="flex justify-between"><span className="text-white/40">Lam</span><span className="capitalize">{tcLam}</span></div>
                       </>}
                       {product === 'sticker_label' && <>
-                        <div className="flex justify-between"><span className="text-gray-400">Shape</span><span className="capitalize">{slShape}</span></div>
-                        <div className="flex justify-between"><span className="text-gray-400">Size</span><span>{slSize}</span></div>
-                        <div className="flex justify-between"><span className="text-gray-400">Material</span><span className="capitalize">{slMaterial}</span></div>
+                        <div className="flex justify-between"><span className="text-white/40">Shape</span><span className="capitalize">{slShape}</span></div>
+                        <div className="flex justify-between"><span className="text-white/40">Size</span><span>{slSize}</span></div>
+                        <div className="flex justify-between"><span className="text-white/40">Material</span><span className="capitalize">{slMaterial}</span></div>
                       </>}
-                      {product === 'hang_tag'       && <div className="flex justify-between"><span className="text-gray-400">Material</span><span className="capitalize">{htMaterial}</span></div>}
-                      {product === 'compliment_slip' && <div className="flex justify-between"><span className="text-gray-400">Sides</span><span className="capitalize">{csSides}</span></div>}
-                      {product === 'letterhead'      && <div className="flex justify-between"><span className="text-gray-400">Paper</span><span>{lhPaper === '80gsm' ? '80 GSM Offset' : '100 GSM'}</span></div>}
+                      {product === 'hang_tag'       && <div className="flex justify-between"><span className="text-white/40">Material</span><span className="capitalize">{htMaterial}</span></div>}
+                      {product === 'compliment_slip' && <div className="flex justify-between"><span className="text-white/40">Sides</span><span className="capitalize">{csSides}</span></div>}
+                      {product === 'letterhead'      && <div className="flex justify-between"><span className="text-white/40">Paper</span><span>{lhPaper === '80gsm' ? '80 GSM Offset' : '100 GSM'}</span></div>}
                       {product === 'ncr_form' && <>
-                        <div className="flex justify-between"><span className="text-gray-400">Size</span><span>{ncrSize.toUpperCase()}</span></div>
-                        <div className="flex justify-between"><span className="text-gray-400">Parts</span><span>{ncrParts}-part</span></div>
+                        <div className="flex justify-between"><span className="text-white/40">Size</span><span>{ncrSize.toUpperCase()}</span></div>
+                        <div className="flex justify-between"><span className="text-white/40">Parts</span><span>{ncrParts}-part</span></div>
                       </>}
-                      {product === 'certificate' && <div className="flex justify-between"><span className="text-gray-400">Border</span><span>{certBorder === 'gold' ? 'Gold' : 'None'}</span></div>}
+                      {product === 'certificate' && <div className="flex justify-between"><span className="text-white/40">Border</span><span>{certBorder === 'gold' ? 'Gold' : 'None'}</span></div>}
                       {product === 'envelope' && <>
-                        <div className="flex justify-between"><span className="text-gray-400">Size</span><span>{envSize}</span></div>
-                        <div className="flex justify-between"><span className="text-gray-400">Sides</span><span className="capitalize">{envSides}</span></div>
+                        <div className="flex justify-between"><span className="text-white/40">Size</span><span>{envSize}</span></div>
+                        <div className="flex justify-between"><span className="text-white/40">Sides</span><span className="capitalize">{envSides}</span></div>
                       </>}
                       <div className="flex justify-between border-t border-white/10 pt-2 mt-1">
-                        <span className="text-gray-400">Est. ready by</span>
+                        <span className="text-white/40">Est. ready by</span>
                         <span className="text-[#25D366] font-medium text-xs">{dispatchDate}</span>
                       </div>
                     </div>
@@ -1169,8 +1169,8 @@ export default function Calculator() {
 
                   {/* Disclaimer tooltip */}
                   <div className="flex justify-center">
-                    <div className="group relative inline-flex items-center gap-1 text-xs text-gray-600 cursor-help">
-                      <svg className="w-3.5 h-3.5 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                    <div className="group relative inline-flex items-center gap-1 text-xs cursor-help" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                      <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20" style={{ color: 'rgba(255,255,255,0.35)' }}>
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                       </svg>
                       <span>Pricing info</span>
