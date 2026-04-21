@@ -365,8 +365,8 @@ export default function Home() {
                 Karachi's
                 <br />
                 <span
-                  className="text-[#7E0001]"
-                  style={{ textShadow: '0 0 80px rgba(126,0,1,0.35)' }}
+                  className="text-[#C8102E]"
+                  style={{ textShadow: '0 0 60px rgba(200,16,46,0.45), 0 0 120px rgba(200,16,46,0.20)' }}
                 >
                   Precision
                 </span>
@@ -393,8 +393,8 @@ export default function Home() {
                   href={WHATSAPP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-white font-semibold px-7 py-3.5 rounded-xl transition-all duration-200 hover:scale-[1.03] hover:bg-[#1EB854]"
-                  style={{ background: '#25D366', boxShadow: '0 4px 24px rgba(37,211,102,0.4)' }}
+                  className="inline-flex items-center gap-2 font-semibold px-7 py-3.5 rounded-xl transition-all duration-200 hover:scale-[1.03]"
+                  style={{ background: 'rgba(37,211,102,0.10)', border: '1px solid rgba(37,211,102,0.28)', color: 'rgba(37,211,102,0.88)' }}
                 >
                   <WhatsAppIcon />
                   WhatsApp Us Now
@@ -689,15 +689,14 @@ export default function Home() {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.05 }}
-            className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4"
-            style={{ gridAutoRows: '200px' }}
+            className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 items-start"
           >
             {portfolioHighlights.map((item, i) => (
               <motion.div
                 key={i}
                 variants={fadeUp}
-                className={`relative rounded-2xl overflow-hidden group cursor-pointer${i === 0 ? ' md:row-span-2' : ''}`}
-                style={{ aspectRatio: i === 0 ? undefined : '4/3' }}
+                className={`relative rounded-2xl overflow-hidden group cursor-pointer${i === 0 ? ' aspect-square md:aspect-auto md:row-span-2' : ''}`}
+                style={i !== 0 ? { aspectRatio: '4/3' } : undefined}
                 whileHover="hovered"
                 whileTap={{ scale: 0.98 }}
               >

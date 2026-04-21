@@ -38,19 +38,12 @@ export default function WhatsAppButton() {
         onHoverEnd={() => setHovered(false)}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.92 }}
-        className="w-14 h-14 rounded-full flex items-center justify-center text-white"
+        className="w-14 h-14 rounded-full flex items-center justify-center"
         style={{
-          background: '#25D366',
-          boxShadow: '0 4px 20px rgba(37,211,102,0.45)',
-        }}
-        animate={{
-          boxShadow: [
-            '0 4px 20px rgba(37,211,102,0.45), 0 0 0 0px rgba(37,211,102,0.35)',
-            '0 4px 20px rgba(37,211,102,0.45), 0 0 0 10px rgba(37,211,102,0)',
-          ],
-        }}
-        transition={{
-          boxShadow: { duration: 1.8, repeat: Infinity, ease: 'easeOut' },
+          background: 'rgba(14,24,42,0.88)',
+          border: '1.5px solid rgba(37,211,102,0.32)',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.45)',
+          color: 'rgba(37,211,102,0.82)',
         }}
       >
         <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">

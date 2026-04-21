@@ -55,15 +55,13 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group flex-shrink-0">
+          <Link to="/" className="flex items-center flex-shrink-0 group">
             <img
               src="/hitech-logo.png"
               alt="Hi-Tech Printers"
-              className="h-9 w-auto object-contain transition-opacity duration-200 group-hover:opacity-85"
+              className="h-12 w-auto object-contain transition-all duration-200"
+              style={{ filter: 'drop-shadow(0 0 10px rgba(126,0,1,0.30)) brightness(1.06)' }}
             />
-            <span className="text-white font-bold text-[15px] tracking-tight hidden sm:block transition-colors duration-200 group-hover:text-[#7E0001]">
-              Hi-Tech Printers
-            </span>
           </Link>
 
           {/* Desktop nav */}
@@ -77,14 +75,14 @@ export default function Navbar() {
               >
                 {({ isActive }) => (
                   <>
-                    <span className={isActive ? 'text-[#7E0001]' : 'text-white/75 group-hover:text-white'}>
+                    <span className={isActive ? 'text-[#C8102E]' : 'text-white/75 group-hover:text-white'}>
                       {label}
                     </span>
                     {/* active indicator dot */}
                     {isActive && (
                       <motion.span
                         layoutId="nav-active-dot"
-                        className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#7E0001]"
+                        className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#C8102E]"
                         transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                       />
                     )}
@@ -103,13 +101,14 @@ export default function Navbar() {
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:inline-flex items-center gap-1.5 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 hover:scale-[1.04] active:scale-100"
+              className="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 hover:scale-[1.04] active:scale-100"
               style={{
-                background: '#25D366',
-                boxShadow: '0 2px 12px rgba(37,211,102,0.35)',
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(37,211,102,0.28)',
+                color: 'rgba(37,211,102,0.85)',
               }}
-              onMouseEnter={e => e.currentTarget.style.background = '#1EB854'}
-              onMouseLeave={e => e.currentTarget.style.background = '#25D366'}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(37,211,102,0.10)'; e.currentTarget.style.borderColor = 'rgba(37,211,102,0.42)' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.borderColor = 'rgba(37,211,102,0.28)' }}
             >
               <WhatsAppIcon />
               Get a Quote
@@ -163,7 +162,7 @@ export default function Navbar() {
                   className={({ isActive }) =>
                     `flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all duration-150 ${
                       isActive
-                        ? 'text-[#7E0001] bg-white/[0.06]'
+                        ? 'text-[#C8102E] bg-white/[0.06]'
                         : 'text-white/70 hover:text-white hover:bg-white/[0.05]'
                     }`
                   }
@@ -172,7 +171,7 @@ export default function Navbar() {
                     <>
                       <span>{label}</span>
                       {isActive && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#7E0001]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#C8102E]" />
                       )}
                     </>
                   )}
@@ -183,10 +182,11 @@ export default function Navbar() {
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 flex items-center justify-center gap-2 text-white text-sm font-semibold px-4 py-3 rounded-xl transition-all duration-200"
+                className="mt-3 flex items-center justify-center gap-2 text-sm font-semibold px-4 py-3 rounded-xl transition-all duration-200"
                 style={{
-                  background: '#25D366',
-                  boxShadow: '0 4px 16px rgba(37,211,102,0.3)',
+                  background: 'rgba(37,211,102,0.10)',
+                  border: '1px solid rgba(37,211,102,0.28)',
+                  color: 'rgba(37,211,102,0.85)',
                 }}
               >
                 <WhatsAppIcon />

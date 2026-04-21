@@ -6,15 +6,15 @@ const WA_NUMBER = '923343219844'
 // ── Product groups ────────────────────────────────────────────────────────
 const INSTAGRAM_PRODUCTS = [
   { id: 'thank_you_card', label: 'Thank You Cards', moq: 100, badge: 'Top Pick' },
-  { id: 'sticker_label',  label: 'Sticker Labels',  moq: 100, badge: 'New' },
+  { id: 'sticker_label',  label: 'Stickers & Labels',  moq: 100, badge: 'New' },
   { id: 'hang_tag',       label: 'Hang Tags',        moq: 100, badge: 'New' },
-  { id: 'sticker',        label: 'Sticker Sheets',   moq: 100 },
+  { id: 'thermal_label',  label: 'Barcode Stickers', moq: 1000, badge: 'New' },
 ]
 
 const BUSINESS_PRODUCTS = [
   { id: 'business_card',   label: 'Business Cards',   moq: 500 },
-  { id: 'flyer_a4',        label: 'Flyer A4',          moq: 500 },
-  { id: 'flyer_a5',        label: 'Flyer A5',          moq: 500 },
+  { id: 'flyer_a4',        label: 'Flyers',            moq: 500 },
+  { id: 'billbook',        label: 'Bill Books',        moq: 25  },
   { id: 'brochure_a4',     label: 'Brochure A4',       moq: 500 },
   { id: 'compliment_slip', label: 'Compliment Slips',  moq: 500 },
   { id: 'letterhead',      label: 'Letterhead A4',     moq: 500 },
@@ -109,14 +109,15 @@ const SLIDER_CONFIG = {
   sticker:         { min: 100,  max: 2000, step: 100 },
   business_card:   { min: 500,  max: 5000, step: 500 },
   flyer_a4:        { min: 500,  max: 5000, step: 500 },
-  flyer_a5:        { min: 500,  max: 5000, step: 500 },
+  billbook:        { min: 50,   max: 500,  step: 25  },
   brochure_a4:     { min: 500,  max: 2500, step: 500 },
   compliment_slip: { min: 500,  max: 5000, step: 500 },
   letterhead:      { min: 500,  max: 5000, step: 500 },
   ncr_form:        { min: 100,  max: 1000, step: 50  },
   certificate:     { min: 100,  max: 1000, step: 50  },
-  envelope:        { min: 500,  max: 2500, step: 500 },
-  notepad_a5:      { min: 10,   max: 100,  step: 10  },
+  envelope:        { min: 500,  max: 2500,  step: 500 },
+  notepad_a5:      { min: 10,   max: 100,   step: 10  },
+  thermal_label:   { min: 1000, max: 10000, step: 500 },
 }
 
 const FLYER_PAPERS = [
@@ -127,6 +128,31 @@ const FLYER_PAPERS = [
   { id: '150gsm',    label: '150 GSM',  addon: 3  },
 ]
 const BROCHURE_PAPERS = FLYER_PAPERS.filter(p => p.id !== 'newspaper')
+
+const THERMAL_SIZES = [
+  { id: '4x2', label: '4×2"', rate: 2.75, note: 'address labels · small tags' },
+  { id: '4x3', label: '4×3"', rate: 3.50, note: 'order slips · return labels' },
+  { id: '4x4', label: '4×4"', rate: 4.00, note: 'product labels · pharmacy bags' },
+  { id: '4x6', label: '4×6"', rate: 6.00, note: 'courier waybills · most popular' },
+]
+
+const THERMAL_NICHES = [
+  { id: 'ecom',      label: 'eCommerce / Courier', note: 'Trax, Leopards, Swyft waybills · COD & return labels' },
+  { id: 'food',      label: 'Food & Tiffin',        note: 'Dabba/tiffin order slips · meal kit labels' },
+  { id: 'pharmacy',  label: 'Pharmacy',             note: 'Prescription bags · medicine labels' },
+  { id: 'laundry',   label: 'Laundry & Dry Clean',  note: 'Garment tags · order tracking' },
+  { id: 'events',    label: 'Events & Ticketing',   note: 'Wristbands · ticket stubs' },
+  { id: 'lab',       label: 'Lab & Medical',        note: 'Blood sample tubes · specimen labels' },
+  { id: 'factory',   label: 'Factory & Warehouse',  note: 'Asset tags · inventory · bin labels' },
+  { id: 'instagram', label: 'Instagram Brands',     note: 'Skincare, candles, food jars, attar' },
+]
+
+const BILLBOOK_SIZES = [
+  { id: '8.5x5.5',  label: '8.5 × 5.5"',  note: 'half-page · compact' },
+  { id: '7.25x9.5', label: '7.25 × 9.5"', note: 'standard ledger' },
+  { id: '8.5x11',   label: '8.5 × 11"',   note: 'full-page · large' },
+  { id: '4.5x7',    label: '4.5 × 7"',    note: 'pocket size' },
+]
 
 // ── Dispatch date ─────────────────────────────────────────────────────────
 function getDispatchDate() {
@@ -159,17 +185,20 @@ function calcEstimate(product, qty, cfg) {
     return { isCustom: false, perUnit: rate, total: Math.round(rate * qty), unit: 'per card' }
   }
   if (product === 'flyer_a4') {
+    if (cfg.flyerSize === 'a5') {
+      const base = qty >= 1000 ? 4 : 8
+      const paper = FLYER_PAPERS.find(p => p.id === cfg.flyerPaper) ?? FLYER_PAPERS[1]
+      const rate = base + paper.addon
+      return { isCustom: false, perUnit: rate, total: Math.round(rate * qty), unit: 'per piece' }
+    }
     const base = qty >= 1000 ? 6 : 9
     const paper = FLYER_PAPERS.find(p => p.id === cfg.flyerPaper) ?? FLYER_PAPERS[1]
     const rate = base + paper.addon
     const foldCharge = cfg.flyerFold !== 'none' ? 500 : 0
     return { isCustom: false, perUnit: rate, total: Math.round(rate * qty) + foldCharge, unit: 'per piece', foldCharge }
   }
-  if (product === 'flyer_a5') {
-    const base = qty >= 1000 ? 4 : 8
-    const paper = FLYER_PAPERS.find(p => p.id === cfg.flyerPaper) ?? FLYER_PAPERS[1]
-    const rate = base + paper.addon
-    return { isCustom: false, perUnit: rate, total: Math.round(rate * qty), unit: 'per piece' }
+  if (product === 'billbook') {
+    return { isCustom: true, customNote: 'Bill book pricing depends on size, parts, paper quality, binding, and cover — send us your specs on WhatsApp and we\'ll quote fast.' }
   }
   if (product === 'brochure_a4') {
     const base = qty >= 1000 ? 6 : 9
@@ -231,6 +260,10 @@ function calcEstimate(product, qty, cfg) {
     if (cfg.envSides === 'double') rate = Math.round(rate * 1.3)
     return { isCustom: false, perUnit: rate, total: Math.round(rate * qty), unit: 'per envelope' }
   }
+  if (product === 'thermal_label') {
+    const sizeObj = THERMAL_SIZES.find(s => s.id === cfg.tlSize) ?? THERMAL_SIZES[3]
+    return { isCustom: false, perUnit: sizeObj.rate, total: Math.round(sizeObj.rate * qty), unit: 'per label' }
+  }
   return { isCustom: true, customNote: 'Please contact us for a quote.' }
 }
 
@@ -246,10 +279,23 @@ function buildWAMessage(product, qty, cfg, estimate, negotiatorActive) {
     lines.push(`*Paper:* ${cfg.bcPaper} GSM`, `*Lamination:* ${cfg.bcLam === 'matte' ? 'Matte' : 'Gloss'}`, `*Sides:* ${cfg.bcSides === 'single' ? 'Single-sided' : 'Double-sided'}`)
     if (cfg.bcSides === 'double' && cfg.bcSpotUV) lines.push(`*Spot UV:* Yes`)
   }
-  if (['flyer_a4', 'flyer_a5', 'brochure_a4'].includes(product)) {
+  if (['flyer_a4', 'brochure_a4'].includes(product)) {
     const papers = product === 'brochure_a4' ? BROCHURE_PAPERS : FLYER_PAPERS
+    if (product === 'flyer_a4') lines.push(`*Size:* ${cfg.flyerSize === 'a5' ? 'A5' : 'A4'}`)
     lines.push(`*Paper:* ${papers.find(p => p.id === cfg.flyerPaper)?.label ?? cfg.flyerPaper}`, `*Sides:* ${cfg.flyerSides === 'single' ? 'Single-sided' : 'Double-sided'}`)
-    if (product !== 'flyer_a5' && cfg.flyerFold !== 'none') lines.push(`*Fold:* ${cfg.flyerFold === 'bifold' ? 'Bi-fold' : 'Tri-fold'}`)
+    if (!(product === 'flyer_a4' && cfg.flyerSize === 'a5') && cfg.flyerFold !== 'none') lines.push(`*Fold:* ${cfg.flyerFold === 'bifold' ? 'Bi-fold' : 'Tri-fold'}`)
+  }
+  if (product === 'billbook') {
+    const sizeObj = BILLBOOK_SIZES.find(s => s.id === cfg.bbSize) ?? BILLBOOK_SIZES[0]
+    lines.push(
+      `*Size:* ${sizeObj.label}`,
+      `*Parts:* ${cfg.bbParts === '2' ? '2-part (Original + Duplicate)' : '3-part (Original + Duplicate + Triplicate)'}`,
+      `*Paper type:* ${cfg.bbPaperType === 'carbon' ? 'Carbon paper' : 'Carbonless / NCR'}`,
+      `*Paper quality:* ${cfg.bbPaperQuality === 'local' ? 'Local offset' : 'Imported'}`,
+      `*Binding:* ${cfg.bbBinding === 'lowcost' ? 'Low-cost binding' : 'Fancy book binding'}`,
+      `*Cover:* ${cfg.bbCover === 'paperback' ? 'Paperback' : 'Hardbound'}`
+    )
+    if (cfg.bbPaperType === 'carbonless') lines.push(`_Note: Carbonless (NCR) pricing is highly volatile — please confirm rates before production._`)
   }
   if (product === 'letterhead') lines.push(`*Paper:* ${cfg.lhPaper === '80gsm' ? '80 GSM Offset' : '100 GSM'}`)
   if (product === 'thank_you_card') lines.push(`*Sides:* ${cfg.tcSides === 'single' ? 'Single-sided' : 'Double-sided'}`, `*Lamination:* ${cfg.tcLam === 'matte' ? 'Matte' : 'Gloss'}`)
@@ -259,6 +305,14 @@ function buildWAMessage(product, qty, cfg, estimate, negotiatorActive) {
   if (product === 'ncr_form') lines.push(`*Size:* ${cfg.ncrSize.toUpperCase()}`, `*Parts:* ${cfg.ncrParts}-part`)
   if (product === 'certificate') lines.push(`*Border:* ${cfg.certBorder === 'gold' ? 'Gold printed border' : 'No border'}`)
   if (product === 'envelope') lines.push(`*Size:* ${cfg.envSize}`, `*Sides:* ${cfg.envSides === 'single' ? 'Single-sided' : 'Double-sided'}`)
+  if (product === 'thermal_label') {
+    const sizeObj = THERMAL_SIZES.find(s => s.id === cfg.tlSize) ?? THERMAL_SIZES[3]
+    lines.push(`*Size:* ${sizeObj.label} — Fasson semi-gloss · pre die-cut · direct thermal`)
+    if (cfg.tlNiche) {
+      const niche = THERMAL_NICHES.find(n => n.id === cfg.tlNiche)
+      if (niche) lines.push(`*Use case:* ${niche.label} — ${niche.note}`)
+    }
+  }
   lines.push(``)
   if (estimate.isCustom) {
     lines.push(`I'd like a custom quote for the above specs.`)
@@ -323,13 +377,13 @@ function RadioOpt({ name, value, checked, onChange, label, note }) {
   )
 }
 
-function QtySlider({ value, onChange, min, max, step }) {
+function QtySlider({ value, onChange, min, max, step, unit = 'pieces' }) {
   const pct = ((value - min) / (max - min)) * 100
   return (
     <div>
       <div className="flex items-baseline justify-between mb-3">
         <span className="text-4xl font-black text-white tabular-nums">{value.toLocaleString()}</span>
-        <span className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>pieces</span>
+        <span className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>{unit}</span>
       </div>
       <input
         type="range" min={min} max={max} step={step} value={value}
@@ -593,6 +647,15 @@ export default function Calculator() {
   const [certBorder, setCertBorder] = useState('none')
   const [envSize,  setEnvSize]  = useState('DL')
   const [envSides, setEnvSides] = useState('single')
+  const [tlSize,  setTlSize]  = useState('4x6')
+  const [tlNiche, setTlNiche] = useState(null)
+  const [flyerSize, setFlyerSize] = useState('a4')
+  const [bbSize, setBbSize]                   = useState('8.5x5.5')
+  const [bbParts, setBbParts]                 = useState('2')
+  const [bbPaperType, setBbPaperType]         = useState('carbon')
+  const [bbPaperQuality, setBbPaperQuality]   = useState('local')
+  const [bbBinding, setBbBinding]             = useState('lowcost')
+  const [bbCover, setBbCover]                 = useState('paperback')
 
   // Negotiator & notification
   const [negotiatorActive, setNegotiatorActive] = useState(false)
@@ -616,15 +679,18 @@ export default function Calculator() {
     setBcSpotUV(false)
     if (pid === 'sticker') { setStickerMode('digital'); setStickerSize('A5') }
     if (pid === 'brochure_a4') setFlyerPaper('90gsm')
+    if (pid === 'thermal_label') { setTlSize('4x6'); setTlNiche(null) }
+    if (pid === 'flyer_a4') setFlyerSize('a4')
+    if (pid === 'billbook') { setBbSize('8.5x5.5'); setBbParts('2'); setBbPaperType('carbon'); setBbPaperQuality('local'); setBbBinding('lowcost'); setBbCover('paperback') }
     triggerNotifOnce()
   }
 
-  const cfg = { stickerMode, stickerSize, bcPaper, bcLam, bcSides, bcSpotUV, flyerPaper, flyerSides, flyerFold, lhPaper, tcSides, tcLam, slShape, slSize, slMaterial, htMaterial, csSides, ncrSize, ncrParts, certBorder, envSize, envSides }
+  const cfg = { stickerMode, stickerSize, bcPaper, bcLam, bcSides, bcSpotUV, flyerPaper, flyerSides, flyerFold, lhPaper, tcSides, tcLam, slShape, slSize, slMaterial, htMaterial, csSides, ncrSize, ncrParts, certBorder, envSize, envSides, tlSize, tlNiche, flyerSize, bbSize, bbParts, bbPaperType, bbPaperQuality, bbBinding, bbCover }
 
   const estimate = useMemo(
     () => calcEstimate(product, qty, cfg),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [product, qty, stickerMode, stickerSize, bcPaper, bcLam, bcSides, bcSpotUV, flyerPaper, flyerSides, flyerFold, lhPaper, tcSides, tcLam, slShape, slSize, slMaterial, htMaterial, csSides, ncrSize, ncrParts, certBorder, envSize, envSides]
+    [product, qty, stickerMode, stickerSize, bcPaper, bcLam, bcSides, bcSpotUV, flyerPaper, flyerSides, flyerFold, lhPaper, tcSides, tcLam, slShape, slSize, slMaterial, htMaterial, csSides, ncrSize, ncrParts, certBorder, envSize, envSides, tlSize, tlNiche, flyerSize, bbSize, bbParts, bbPaperType, bbPaperQuality, bbBinding, bbCover]
   )
 
   const isOffsetSticker = product === 'sticker' && stickerMode === 'offset'
@@ -779,6 +845,7 @@ export default function Calculator() {
                       min={sliderCfg.min}
                       max={sliderCfg.max}
                       step={sliderCfg.step}
+                      unit={product === 'billbook' ? 'books' : 'pieces'}
                     />
                     <div className="mt-4 flex items-center gap-2">
                       <span className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>Custom qty:</span>
@@ -878,6 +945,51 @@ export default function Calculator() {
                   </div>
                 )}
 
+                {/* THERMAL / BARCODE STICKERS */}
+                {product === 'thermal_label' && (
+                  <>
+                    <div className="calc-glass-card rounded-2xl p-6">
+                      <StepLabel n={S()}>Label Size</StepLabel>
+                      <div className="grid grid-cols-2 gap-2 mb-3">
+                        {THERMAL_SIZES.map(s => (
+                          <button
+                            key={s.id}
+                            onClick={() => setTlSize(s.id)}
+                            className={`text-left px-3 py-3 rounded-xl text-sm border transition-all duration-150 ${
+                              tlSize === s.id ? 'text-white border-white/25' : 'border-white/10 text-white/60 hover:border-white/25 hover:text-white'
+                            }`}
+                            style={tlSize === s.id ? { background: 'rgba(126,0,1,0.25)' } : { background: 'rgba(255,255,255,0.04)' }}
+                          >
+                            <span className="font-bold block text-base">{s.label}</span>
+                            <span className="text-[11px] block mt-0.5 opacity-60">{s.note}</span>
+                            <span className="text-xs font-semibold block mt-1.5" style={{ color: tlSize === s.id ? '#FF9999' : 'rgba(255,255,255,0.40)' }}>PKR {s.rate} / label</span>
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>Fasson semi-gloss · pre die-cut · direct thermal · water-resistant</p>
+                    </div>
+                    <div className="calc-glass-card rounded-2xl p-6">
+                      <StepLabel n={S()}>Your Use Case</StepLabel>
+                      <p className="text-xs mb-3" style={{ color: 'rgba(255,255,255,0.40)' }}>Optional — helps us confirm the right stock for your application.</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {THERMAL_NICHES.map(n => (
+                          <button
+                            key={n.id}
+                            onClick={() => setTlNiche(tlNiche === n.id ? null : n.id)}
+                            className={`text-left px-3 py-2.5 rounded-xl text-sm border transition-all duration-150 ${
+                              tlNiche === n.id ? 'text-white border-white/25' : 'border-white/10 text-white/60 hover:border-white/20 hover:text-white'
+                            }`}
+                            style={tlNiche === n.id ? { background: 'rgba(126,0,1,0.20)' } : { background: 'rgba(255,255,255,0.04)' }}
+                          >
+                            <span className="font-medium block">{n.label}</span>
+                            {tlNiche === n.id && <span className="text-[11px] block mt-1 leading-snug" style={{ color: 'rgba(255,255,255,0.55)' }}>{n.note}</span>}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+
                 {/* BUSINESS CARDS */}
                 {product === 'business_card' && (
                   <>
@@ -920,16 +1032,23 @@ export default function Calculator() {
                   </>
                 )}
 
-                {/* FLYER A4 */}
+                {/* FLYERS — A4 & A5 merged */}
                 {product === 'flyer_a4' && (
                   <>
+                    <div className="calc-glass-card rounded-2xl p-6">
+                      <StepLabel n={S()}>Size</StepLabel>
+                      <div className="flex gap-2">
+                        <OptBtn active={flyerSize === 'a4'} onClick={() => { setFlyerSize('a4'); setFlyerFold('none') }}>A4</OptBtn>
+                        <OptBtn active={flyerSize === 'a5'} onClick={() => { setFlyerSize('a5'); setFlyerFold('none') }}>A5</OptBtn>
+                      </div>
+                    </div>
                     <div className="calc-glass-card rounded-2xl p-6">
                       <StepLabel n={S()}>Paper Stock</StepLabel>
                       <div className="flex flex-wrap gap-2">
                         {FLYER_PAPERS.map(p => <OptBtn key={p.id} active={flyerPaper === p.id} onClick={() => setFlyerPaper(p.id)}>{p.label}</OptBtn>)}
                       </div>
                     </div>
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <div className={`grid gap-4 ${flyerSize === 'a4' ? 'sm:grid-cols-2' : ''}`}>
                       <div className="calc-glass-card rounded-2xl p-6">
                         <StepLabel n={S()}>Print Sides</StepLabel>
                         <div className="space-y-2.5">
@@ -937,32 +1056,87 @@ export default function Calculator() {
                           <RadioOpt name="flySides" value="double" checked={flyerSides === 'double'} onChange={() => setFlyerSides('double')} label="Double-sided" />
                         </div>
                       </div>
-                      <div className="calc-glass-card rounded-2xl p-6">
-                        <StepLabel n={S()}>Fold Style</StepLabel>
-                        <div className="space-y-2.5">
-                          <RadioOpt name="flyFold" value="none"    checked={flyerFold === 'none'}    onChange={() => setFlyerFold('none')}    label="No Fold" />
-                          <RadioOpt name="flyFold" value="bifold"  checked={flyerFold === 'bifold'}  onChange={() => setFlyerFold('bifold')}  label="Bi-fold"  note="+PKR 500" />
-                          <RadioOpt name="flyFold" value="trifold" checked={flyerFold === 'trifold'} onChange={() => setFlyerFold('trifold')} label="Tri-fold" note="+PKR 500" />
+                      {flyerSize === 'a4' && (
+                        <div className="calc-glass-card rounded-2xl p-6">
+                          <StepLabel n={S()}>Fold Style</StepLabel>
+                          <div className="space-y-2.5">
+                            <RadioOpt name="flyFold" value="none"    checked={flyerFold === 'none'}    onChange={() => setFlyerFold('none')}    label="No Fold" />
+                            <RadioOpt name="flyFold" value="bifold"  checked={flyerFold === 'bifold'}  onChange={() => setFlyerFold('bifold')}  label="Bi-fold"  note="+PKR 500" />
+                            <RadioOpt name="flyFold" value="trifold" checked={flyerFold === 'trifold'} onChange={() => setFlyerFold('trifold')} label="Tri-fold" note="+PKR 500" />
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </>
                 )}
 
-                {/* FLYER A5 */}
-                {product === 'flyer_a5' && (
+                {/* BILL BOOKS */}
+                {product === 'billbook' && (
                   <>
                     <div className="calc-glass-card rounded-2xl p-6">
-                      <StepLabel n={S()}>Paper Stock</StepLabel>
-                      <div className="flex flex-wrap gap-2">
-                        {FLYER_PAPERS.map(p => <OptBtn key={p.id} active={flyerPaper === p.id} onClick={() => setFlyerPaper(p.id)}>{p.label}</OptBtn>)}
+                      <StepLabel n={S()}>Book Size</StepLabel>
+                      <div className="grid grid-cols-2 gap-2">
+                        {BILLBOOK_SIZES.map(s => (
+                          <button
+                            key={s.id}
+                            onClick={() => setBbSize(s.id)}
+                            className={`text-left px-3 py-3 rounded-xl text-sm border transition-all duration-150 ${
+                              bbSize === s.id ? 'text-white border-white/25' : 'border-white/10 text-white/60 hover:border-white/25 hover:text-white'
+                            }`}
+                            style={bbSize === s.id ? { background: 'rgba(126,0,1,0.25)' } : { background: 'rgba(255,255,255,0.04)' }}
+                          >
+                            <span className="font-bold block">{s.label}</span>
+                            <span className="text-[11px] block mt-0.5 opacity-60">{s.note}</span>
+                          </button>
+                        ))}
                       </div>
                     </div>
-                    <div className="calc-glass-card rounded-2xl p-6">
-                      <StepLabel n={S()}>Print Sides</StepLabel>
-                      <div className="flex gap-6">
-                        <RadioOpt name="flySidesA5" value="single" checked={flyerSides === 'single'} onChange={() => setFlyerSides('single')} label="Single-sided" />
-                        <RadioOpt name="flySidesA5" value="double" checked={flyerSides === 'double'} onChange={() => setFlyerSides('double')} label="Double-sided" />
+
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="calc-glass-card rounded-2xl p-6">
+                        <StepLabel n={S()}>Parts</StepLabel>
+                        <div className="space-y-2.5">
+                          <RadioOpt name="bbParts" value="2" checked={bbParts === '2'} onChange={() => setBbParts('2')} label="2-part" note="Original + Duplicate" />
+                          <RadioOpt name="bbParts" value="3" checked={bbParts === '3'} onChange={() => setBbParts('3')} label="3-part" note="Original + Duplicate + Triplicate" />
+                        </div>
+                      </div>
+                      <div className="calc-glass-card rounded-2xl p-6">
+                        <StepLabel n={S()}>Paper Type</StepLabel>
+                        <div className="space-y-2.5">
+                          <RadioOpt name="bbPaperType" value="carbon" checked={bbPaperType === 'carbon'} onChange={() => setBbPaperType('carbon')} label="Carbon paper" note="standard" />
+                          <RadioOpt name="bbPaperType" value="carbonless" checked={bbPaperType === 'carbonless'} onChange={() => setBbPaperType('carbonless')} label="Carbonless / NCR" note="no carbon smudge" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {bbPaperType === 'carbonless' && (
+                      <div className="rounded-xl p-4" style={{ background: 'rgba(204,102,0,0.08)', border: '1px solid rgba(204,102,0,0.28)' }}>
+                        <p className="text-sm font-semibold mb-1" style={{ color: '#CC9933' }}>Highly volatile pricing</p>
+                        <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.50)' }}>Carbonless / NCR paper costs fluctuate with import rates and roll availability. No fixed rate can be shown — price is confirmed on WhatsApp after your spec.</p>
+                      </div>
+                    )}
+
+                    <div className="grid sm:grid-cols-3 gap-4">
+                      <div className="calc-glass-card rounded-2xl p-6">
+                        <StepLabel n={S()}>Paper Quality</StepLabel>
+                        <div className="space-y-2.5">
+                          <RadioOpt name="bbPQ" value="local"    checked={bbPaperQuality === 'local'}    onChange={() => setBbPaperQuality('local')}    label="Local offset" />
+                          <RadioOpt name="bbPQ" value="imported" checked={bbPaperQuality === 'imported'} onChange={() => setBbPaperQuality('imported')} label="Imported" note="premium" />
+                        </div>
+                      </div>
+                      <div className="calc-glass-card rounded-2xl p-6">
+                        <StepLabel n={S()}>Binding</StepLabel>
+                        <div className="space-y-2.5">
+                          <RadioOpt name="bbBind" value="lowcost" checked={bbBinding === 'lowcost'} onChange={() => setBbBinding('lowcost')} label="Low-cost binding" />
+                          <RadioOpt name="bbBind" value="fancy"   checked={bbBinding === 'fancy'}   onChange={() => setBbBinding('fancy')}   label="Fancy book binding" />
+                        </div>
+                      </div>
+                      <div className="calc-glass-card rounded-2xl p-6">
+                        <StepLabel n={S()}>Cover</StepLabel>
+                        <div className="space-y-2.5">
+                          <RadioOpt name="bbCover" value="paperback" checked={bbCover === 'paperback'} onChange={() => setBbCover('paperback')} label="Paperback" />
+                          <RadioOpt name="bbCover" value="hardbound" checked={bbCover === 'hardbound'} onChange={() => setBbCover('hardbound')} label="Hardbound" />
+                        </div>
                       </div>
                     </div>
                   </>
@@ -1118,10 +1292,18 @@ export default function Calculator() {
                         <div className="flex justify-between"><span className="text-white/40">Sides</span><span className="capitalize">{bcSides}</span></div>
                         {bcSides === 'double' && bcSpotUV && <div className="flex justify-between"><span className="text-white/40">Spot UV</span><span>Yes</span></div>}
                       </>}
-                      {['flyer_a4', 'flyer_a5', 'brochure_a4'].includes(product) && <>
+                      {['flyer_a4', 'brochure_a4'].includes(product) && <>
+                        {product === 'flyer_a4' && <div className="flex justify-between"><span className="text-white/40">Size</span><span>{flyerSize.toUpperCase()}</span></div>}
                         <div className="flex justify-between"><span className="text-white/40">Paper</span><span>{(product === 'brochure_a4' ? BROCHURE_PAPERS : FLYER_PAPERS).find(p => p.id === flyerPaper)?.label}</span></div>
                         <div className="flex justify-between"><span className="text-white/40">Sides</span><span className="capitalize">{flyerSides}</span></div>
-                        {product !== 'flyer_a5' && flyerFold !== 'none' && <div className="flex justify-between"><span className="text-white/40">Fold</span><span className="capitalize">{flyerFold}</span></div>}
+                        {!(product === 'flyer_a4' && flyerSize === 'a5') && flyerFold !== 'none' && <div className="flex justify-between"><span className="text-white/40">Fold</span><span className="capitalize">{flyerFold}</span></div>}
+                      </>}
+                      {product === 'billbook' && <>
+                        <div className="flex justify-between"><span className="text-white/40">Size</span><span>{BILLBOOK_SIZES.find(s => s.id === bbSize)?.label}</span></div>
+                        <div className="flex justify-between"><span className="text-white/40">Parts</span><span>{bbParts}-part</span></div>
+                        <div className="flex justify-between"><span className="text-white/40">Paper</span><span>{bbPaperType === 'carbon' ? 'Carbon' : 'Carbonless'} · {bbPaperQuality === 'local' ? 'Local' : 'Imported'}</span></div>
+                        <div className="flex justify-between"><span className="text-white/40">Binding</span><span>{bbBinding === 'lowcost' ? 'Low-cost' : 'Fancy'}</span></div>
+                        <div className="flex justify-between"><span className="text-white/40">Cover</span><span>{bbCover === 'paperback' ? 'Paperback' : 'Hardbound'}</span></div>
                       </>}
                       {product === 'thank_you_card' && <>
                         <div className="flex justify-between"><span className="text-white/40">Sides</span><span className="capitalize">{tcSides}</span></div>
@@ -1131,6 +1313,10 @@ export default function Calculator() {
                         <div className="flex justify-between"><span className="text-white/40">Shape</span><span className="capitalize">{slShape}</span></div>
                         <div className="flex justify-between"><span className="text-white/40">Size</span><span>{slSize}</span></div>
                         <div className="flex justify-between"><span className="text-white/40">Material</span><span className="capitalize">{slMaterial}</span></div>
+                      </>}
+                      {product === 'thermal_label' && <>
+                        <div className="flex justify-between"><span className="text-white/40">Size</span><span>{THERMAL_SIZES.find(s => s.id === tlSize)?.label} · semi-gloss</span></div>
+                        {tlNiche && <div className="flex justify-between"><span className="text-white/40">Use case</span><span>{THERMAL_NICHES.find(n => n.id === tlNiche)?.label}</span></div>}
                       </>}
                       {product === 'hang_tag'       && <div className="flex justify-between"><span className="text-white/40">Material</span><span className="capitalize">{htMaterial}</span></div>}
                       {product === 'compliment_slip' && <div className="flex justify-between"><span className="text-white/40">Sides</span><span className="capitalize">{csSides}</span></div>}
@@ -1158,8 +1344,8 @@ export default function Calculator() {
                   )}
 
                   <a href={waUrl} target="_blank" rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-2 text-white font-bold px-4 py-3 rounded-xl transition-all hover:scale-[1.02] mb-3"
-                    style={{ background: '#25D366', boxShadow: '0 4px 20px rgba(37,211,102,0.30)' }}
+                    className="w-full flex items-center justify-center gap-2 font-bold px-4 py-3 rounded-xl transition-all hover:scale-[1.02] mb-3"
+                    style={{ background: 'rgba(37,211,102,0.10)', border: '1px solid rgba(37,211,102,0.28)', color: 'rgba(37,211,102,0.88)' }}
                   >
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />

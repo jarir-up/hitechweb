@@ -63,7 +63,9 @@
   --color-navy-deep:   #0E182A;
   --color-navy-mid:    #162035;
   --color-navy-light:  #1E2D47;
-  --color-maroon:      #7E0001;
+  --color-maroon:      #7E0001;   /* fills, borders, card accents */
+  --color-crimson:     #C8102E;   /* text accents, active states, headings */
+  --color-crimson-live:#FF5555;   /* live/urgent indicators only */
   --color-maroon-glow: rgba(126,0,1,0.35);
 
   /* Legacy aliases */

@@ -2,7 +2,6 @@ export const sectors = [
   { id: 'all',       label: 'All Work' },
   { id: 'corporate', label: 'Corporate' },
   { id: 'schools',   label: 'Schools' },
-  { id: 'pharma',    label: 'Pharma' },
   { id: 'textile',   label: 'Textile' },
   { id: 'events',    label: 'Events' },
   { id: 'retail',    label: 'Retail' },
@@ -98,15 +97,6 @@ export const portfolioItems = [
     sector: 'schools',
     description: 'Single-sided A5 promotional flyer on 130 GSM gloss stock for Riphah College, produced in a rush run.',
     imageSrc: '/images/A5 Flyer-Riphah College.webp',
-  },
-
-  /* ── Pharma ──────────────────────────────────────────────── */
-  {
-    id: 12,
-    title: 'Pharma Product Labels',
-    sector: 'pharma',
-    description: 'High-precision pharmaceutical product labels with barcodes, compliance text, and sequential numbering for a Karachi distributor.',
-    imagePlaceholder: true,
   },
 
   /* ── Textile ─────────────────────────────────────────────── */
